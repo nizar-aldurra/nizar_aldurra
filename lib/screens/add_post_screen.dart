@@ -12,9 +12,8 @@ class AddPostScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Add post',
-          textAlign: TextAlign.center,
         ),
-        centerTitle: true,
+        centerTitle: false,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),

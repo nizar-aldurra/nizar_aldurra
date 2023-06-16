@@ -1,72 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:nizar_aldurra/screens/home_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nizar_aldurra/BloC/authentication/authentication_bloc.dart';
+import 'package:nizar_aldurra/BloC/authentication/authentication_bloc.dart';
 import 'package:nizar_aldurra/screens/register_screen.dart';
+import '../BloC/login/login_bloc.dart';
+import 'Nice_button.dart';
+import 'nice_text_field.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class LoginForm extends StatelessWidget {
+  LoginForm(this.loginBloc, {super.key});
 
-  @override
-  State<LoginForm> createState() => _LoginFormState();
-}
+  LoginBloc loginBloc;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
-class _LoginFormState extends State<LoginForm> {
-  final _formKey = GlobalKey<FormState>();
-  String _email = '';
-  String _password = '';
   @override
   Widget build(BuildContext context) {
-    return Form(
-        key: _formKey,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Login',
+          textAlign: TextAlign.center,
+        ),
+        centerTitle: true,
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(30),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'email',
-              ),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return "please enter the email";
-                }
-                return null;
-              },
-              onChanged: (value) {
-                _email = value;
+            NiceTextField(
+              hintText: 'enter the email address',
+              labelText: 'Email',
+              icon: Icons.email_outlined,
+              maxLines: 1,
+              keyboardType: TextInputType.emailAddress,
+              controller: emailController,
+              onChange: (value) {
+                loginBloc.add(EmailChanged(value));
               },
             ),
-            TextFormField(
-              decoration: const InputDecoration(labelText: 'password'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return "please enter the password";
-                }
-                return null;
-              },
-              onChanged: (value) {
-                _password = value;
+            NiceTextField(
+              hintText: 'enter the password',
+              labelText: 'Password',
+              icon: Icons.password,
+              keyboardType: TextInputType.text,
+              controller: passwordController,
+              obscureText: true,
+              onChange: (value) {
+                loginBloc.add(PasswordChanged(value));
               },
             ),
             const SizedBox(
-              height: 20,
+              height: 15,
             ),
             TextButton(
                 onPressed: () {
                   Navigator.of(context)
-                      .pushReplacementNamed(RegisterScreen.routeName);
+                      .pushNamed(RegisterScreen.routeName);
                 },
                 child: const Text('Don\'t have an account? Register here')),
             const SizedBox(
-              height: 20,
+              height: 15,
             ),
-            ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    print(_email);
-                    print(_password);
-                    Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
-                  }
-                },
-                child: const Text('Login'))
+            NiceButton(
+              text: 'Login',
+              onPress: () {
+                loginBloc.add(LoginButtonPressed());
+              },
+            ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
+
+
+

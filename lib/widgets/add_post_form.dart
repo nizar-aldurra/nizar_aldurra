@@ -36,6 +36,7 @@ class _AddPostFormState extends State<AddPostForm> {
               maxLines: 5,
               keyboardType: TextInputType.multiline,
               decoration: const InputDecoration(
+                alignLabelWithHint: true,
                 labelText: 'post',
                 isDense: true,
               ),
@@ -55,8 +56,6 @@ class _AddPostFormState extends State<AddPostForm> {
             ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    print(_title);
-                    print(_description);
                     Navigator.of(context).pop();
                   }
                 },
