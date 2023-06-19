@@ -19,13 +19,18 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
 
   Future<void> _onCommentsLoad(CommentsLoad event, Emitter<CommentsState> emit) async {
     // try{
-    emit(CommentsLoading());
+    print('hi');
     var t=await postsRepository.getPostComments(event.postId);
-    final List<Comment> comments = (t['data']).map<Comment>((e) => Comment.fromMap(e)).toList();
-    if (comments.isEmpty){
+    if(t== null){
       emit(CommentsFailure('no comments'));
     }else {
-      emit(CommentsSuccess(comments));
+      final List<Comment> comments =
+          (t['data']).map<Comment>((e) => Comment.fromMap(e)).toList();
+      if (comments.isEmpty) {
+        emit(CommentsFailure('no comments'));
+      } else {
+        emit(CommentsSuccess(comments));
+      }
     }
     // } catch(error){
     //   print(error);

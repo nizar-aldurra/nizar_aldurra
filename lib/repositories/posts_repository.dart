@@ -12,13 +12,8 @@ class PostsRepository extends BaseRepository{
     var response = await http.get(
         Uri.parse('${AppData.baseURL}/$controller/$postId/comments'),
         headers: header());
-
     var result;
-    // try {
     result = jsonDecode(response.body);
-    // } catch (error) {
-    //   print(error);
-    // }
     return result;
   }
 }
