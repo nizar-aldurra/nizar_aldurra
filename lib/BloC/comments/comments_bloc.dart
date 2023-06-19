@@ -18,8 +18,6 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
   PostsRepository postsRepository= PostsRepository();
 
   Future<void> _onCommentsLoad(CommentsLoad event, Emitter<CommentsState> emit) async {
-    // try{
-    print('hi');
     var t=await postsRepository.getPostComments(event.postId);
     if(t== null){
       emit(CommentsFailure('no comments'));

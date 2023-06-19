@@ -54,6 +54,7 @@ class _CommentsWidgetState extends State<CommentsWidget> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController textEditingController = TextEditingController();
     return BlocBuilder<CommentsBloc, CommentsState>(
       builder: (context, state) {
         return BlocBuilder<AddCommentBloc, AddCommentState>(
@@ -76,6 +77,7 @@ class _CommentsWidgetState extends State<CommentsWidget> {
                             width: MediaQuery.of(context).size.width * 0.83,
                             child: TextField(
                               maxLines: 3,
+                              controller: textEditingController,
                               decoration: const InputDecoration(
                                 hintText: 'write a comment ....',
                               ),
@@ -87,8 +89,10 @@ class _CommentsWidgetState extends State<CommentsWidget> {
                             onPressed: () {
                               _addCommentBloc
                                   .add(AddCommentButtonPressed(widget.postId));
-                              context.read<CommentsBloc>().add(CommentsLoad(widget.postId));
-                              Navigator.of(context).pop();
+                              context
+                                  .read<CommentsBloc>()
+                                  .add(CommentsLoad(widget.postId));
+                              textEditingController.clear();
                             },
                             icon: const Icon(Icons.send))
                       ],
@@ -98,14 +102,13 @@ class _CommentsWidgetState extends State<CommentsWidget> {
               );
             } else if (state is CommentsSuccess) {
               List<Comment> comments = state.comment;
-              print(comments);
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ListView.builder(
-                      shrinkWrap: true,
+                        shrinkWrap: true,
                         itemCount: comments.length,
                         itemBuilder: (BuildContext context, int index) {
                           return commentCard(index, comments);
@@ -116,6 +119,7 @@ class _CommentsWidgetState extends State<CommentsWidget> {
                             width: MediaQuery.of(context).size.width * 0.83,
                             child: TextField(
                               maxLines: 3,
+                              controller: textEditingController,
                               decoration: const InputDecoration(
                                 hintText: 'write a comment ....',
                               ),
@@ -127,8 +131,10 @@ class _CommentsWidgetState extends State<CommentsWidget> {
                             onPressed: () {
                               _addCommentBloc
                                   .add(AddCommentButtonPressed(widget.postId));
-                              context.read<CommentsBloc>().add(CommentsLoad(widget.postId));
-                              Navigator.of(context).pop();
+                              context
+                                  .read<CommentsBloc>()
+                                  .add(CommentsLoad(widget.postId));
+                              textEditingController.clear();
                             },
                             icon: const Icon(Icons.send))
                       ],
