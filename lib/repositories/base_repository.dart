@@ -20,7 +20,7 @@ class BaseRepository {
         headers: header());
     var result;
     // try {
-    result=jsonDecode(response.body);
+    result = jsonDecode(response.body);
     // } catch (error) {
     //   print(error);
     // }
@@ -40,11 +40,11 @@ class BaseRepository {
     var response = await http.post(
       Uri.parse('${AppData.baseURL}/$controller/create'),
       headers: header(),
-      body: data.toMap(),
+      body: jsonEncode(data.toMap()),
     );
-    var result = [];
+    var result;
     try {
-      result = json.decode(response.body);
+      result = jsonDecode(response.body);
       print(response.statusCode);
     } catch (error) {
       print(error);

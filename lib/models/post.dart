@@ -9,20 +9,21 @@ class Post {
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
-      'user_id': userId,
       'title': title,
       'body': body,
-      'published_at': publishedAt,
     };
   }
+  @override
+  toString(){
+    return '{title : $title , body: $body}';
+}
 
   factory Post.fromMap(Map<String, dynamic> map) {
     return Post(
       id: map['id'].toString(),
       userId: map['user_id'].toString(),
-      title: map['title'] as String,
-      body: map['body'] as String,
+      title: map['title'].toString(),
+      body: map['body'].toString(),
       publishedAt: DateTime.parse(map['created_at']).toUtc(),
     );
   }

@@ -22,13 +22,9 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     // try{
       emit(PostsLoading());
       var t=await postsRepository.getAll();
-      print(t);
+      print('$t\n\n\n\n');
       final List<Post> posts = (t['data']).map<Post>((e) => Post.fromMap(e)).toList();
       emit(PostsSuccess(posts));
-    // } catch(error){
-    //   print(error);
-    //   emit(PostsFailure(error.toString()));
-    // }
   }
 
   Future<void> _onPostsUpdated(

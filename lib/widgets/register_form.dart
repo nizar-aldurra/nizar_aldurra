@@ -37,7 +37,7 @@ class RegisterForm extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: Container(
+      body: Padding(
         padding: const EdgeInsets.all(30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

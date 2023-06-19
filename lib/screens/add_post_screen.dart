@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nizar_aldurra/BloC/add_post/add_post_bloc.dart';
 import 'package:nizar_aldurra/widgets/add_post_form.dart';
 
 class AddPostScreen extends StatelessWidget {
@@ -17,8 +19,11 @@ class AddPostScreen extends StatelessWidget {
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
-        child: const SingleChildScrollView(
-          child: AddPostForm(),
+        child: SingleChildScrollView(
+          child: BlocProvider(
+            create: (context) => AddPostBloc(),
+            child: AddPostForm(),
+          ),
         ),
       ),
     );

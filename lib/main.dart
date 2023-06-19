@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nizar_aldurra/BloC/authentication/authentication_bloc.dart';
 import 'package:nizar_aldurra/screens/add_post_screen.dart';
+import 'package:nizar_aldurra/screens/comments_screen.dart';
 import 'package:nizar_aldurra/screens/home_screen.dart';
 import 'package:nizar_aldurra/screens/login_screen.dart';
 import 'package:nizar_aldurra/screens/register_screen.dart';
@@ -42,6 +43,7 @@ class MainApp extends StatelessWidget {
         LoginScreen.routeName: (ctx) => LoginScreen(),
         RegisterScreen.routeName: (ctx) => RegisterScreen(),
         HomeScreen.routeName: (ctx) => const HomeScreen(),
+        CommentsScreen.routeName: (ctx) => const CommentsScreen(),
         AddPostScreen.routeName: (ctx) => const AddPostScreen(),
       },
     );
