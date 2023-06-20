@@ -22,9 +22,9 @@ class RegisterScreen extends StatelessWidget {
               body: Center(child: CircularProgressIndicator()));
         } else if (state is RegisterSuccess) {
           context.read<AuthenticationBloc>().add(
-            AuthenticationSignedUp(state.user),);
+                AuthenticationSignedUp(state.user),
+              );
           return HomeScreen();
-
         } else {
           return RegisterForm(_registerBloc);
         }

@@ -56,8 +56,7 @@ class LoginForm extends StatelessWidget {
             ),
             TextButton(
                 onPressed: () {
-                  Navigator.of(context)
-                      .pushNamed(RegisterScreen.routeName);
+                  Navigator.of(context).pushNamed(RegisterScreen.routeName);
                 },
                 child: const Text('Don\'t have an account? Register here')),
             const SizedBox(
@@ -75,6 +74,3 @@ class LoginForm extends StatelessWidget {
     );
   }
 }
-
-
-

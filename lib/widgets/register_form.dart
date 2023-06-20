@@ -7,6 +7,7 @@ import 'nice_text_field.dart';
 
 class RegisterForm extends StatelessWidget {
   RegisterBloc _registerBloc;
+
   RegisterForm(this._registerBloc, {super.key});
 
   final _formKey = GlobalKey<FormState>();
@@ -19,13 +20,13 @@ class RegisterForm extends StatelessWidget {
 
   String _confirmedPassword = '';
 
-  TextEditingController nameController=TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
-  TextEditingController emailController=TextEditingController();
+  TextEditingController emailController = TextEditingController();
 
-  TextEditingController passwordController=TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
-  TextEditingController confirmPasswordController=TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +94,7 @@ class RegisterForm extends StatelessWidget {
             ),
             TextButton(
                 onPressed: () {
-                  Navigator.of(context)
-                      .pop();
+                  Navigator.of(context).pop();
                 },
                 child: const Text('Don\'t have an account? Register here')),
             const SizedBox(

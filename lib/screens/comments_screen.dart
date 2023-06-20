@@ -64,84 +64,88 @@ class _CommentsWidgetState extends State<CommentsWidget> {
               context.read<CommentsBloc>().add(CommentsLoad(widget.postId));
               return const Scaffold(
                   body: Center(child: CircularProgressIndicator()));
-            } else if (state is CommentsFailure) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Expanded(child: Center(child: Text('no comments'))),
-                    Row(
-                      children: [
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.83,
-                            child: TextField(
-                              maxLines: 3,
-                              controller: textEditingController,
-                              decoration: const InputDecoration(
-                                hintText: 'write a comment ....',
-                              ),
-                              onChanged: (value) {
-                                _addCommentBloc.add(BodyCommentChanged(value));
-                              },
-                            )),
-                        IconButton(
-                            onPressed: () {
-                              _addCommentBloc
-                                  .add(AddCommentButtonPressed(widget.postId));
-                              context
-                                  .read<CommentsBloc>()
-                                  .add(CommentsLoad(widget.postId));
-                              textEditingController.clear();
-                            },
-                            icon: const Icon(Icons.send))
-                      ],
-                    ),
-                  ],
-                ),
-              );
             } else if (state is CommentsSuccess) {
               List<Comment> comments = state.comment;
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: comments.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return commentCard(index, comments);
-                        }),
-                    Row(
-                      children: [
-                        SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.83,
-                            child: TextField(
-                              maxLines: 3,
-                              controller: textEditingController,
-                              decoration: const InputDecoration(
-                                hintText: 'write a comment ....',
-                              ),
-                              onChanged: (value) {
-                                _addCommentBloc.add(BodyCommentChanged(value));
+              if (comments.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Expanded(child: Center(child: Text('no comments'))),
+                      Row(
+                        children: [
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.83,
+                              child: TextField(
+                                maxLines: 3,
+                                controller: textEditingController,
+                                decoration: const InputDecoration(
+                                  hintText: 'write a comment ....',
+                                ),
+                                onChanged: (value) {
+                                  _addCommentBloc
+                                      .add(BodyCommentChanged(value));
+                                },
+                              )),
+                          IconButton(
+                              onPressed: () {
+                                _addCommentBloc.add(
+                                    AddCommentButtonPressed(widget.postId));
+                                context
+                                    .read<CommentsBloc>()
+                                    .add(CommentsLoad(widget.postId));
+                                textEditingController.clear();
                               },
-                            )),
-                        IconButton(
-                            onPressed: () {
-                              _addCommentBloc
-                                  .add(AddCommentButtonPressed(widget.postId));
-                              context
-                                  .read<CommentsBloc>()
-                                  .add(CommentsLoad(widget.postId));
-                              textEditingController.clear();
-                            },
-                            icon: const Icon(Icons.send))
-                      ],
-                    ),
-                  ],
-                ),
-              );
+                              icon: const Icon(Icons.send))
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: comments.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return commentCard(index, comments);
+                          }),
+                      Row(
+                        children: [
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.83,
+                              child: TextField(
+                                maxLines: 3,
+                                controller: textEditingController,
+                                decoration: const InputDecoration(
+                                  hintText: 'write a comment ....',
+                                ),
+                                onChanged: (value) {
+                                  _addCommentBloc
+                                      .add(BodyCommentChanged(value));
+                                },
+                              )),
+                          IconButton(
+                              onPressed: () {
+                                _addCommentBloc.add(
+                                    AddCommentButtonPressed(widget.postId));
+                                context
+                                    .read<CommentsBloc>()
+                                    .add(CommentsLoad(widget.postId));
+                                textEditingController.clear();
+                              },
+                              icon: const Icon(Icons.send))
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }
             }
             return const Center(
               child: Text('Problem in Server'),

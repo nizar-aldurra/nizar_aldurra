@@ -45,22 +45,22 @@ class AuthenticationBloc
     emit(AuthenticationStatus.unauthenticated);
   }
 
-  loadCashedUser()async{
+  loadCashedUser() async {
     var shared = await SharedPreferences.getInstance();
 
     var userData = shared.getString('user');
-    if(userData!=null &&userData!='-1'){
+    if (userData != null && userData != '-1') {
       User user = User.fromMapFromSharedPreferences(jsonDecode(userData));
       print(user.toString());
-      AppData.token=user.token!;
-      AppData.userId=user.id!;
+      AppData.token = user.token!;
+      AppData.userId = user.id!;
       emit(AuthenticationStatus.authenticated);
-    }
-    else{
+    } else {
       emit(AuthenticationStatus.unauthenticated);
     }
   }
-  logout()async{
+
+  logout() async {
     AuthRepository authRepository = AuthRepository();
     authRepository.logout();
     emit(AuthenticationStatus.unauthenticated);

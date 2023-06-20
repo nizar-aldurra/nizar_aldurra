@@ -14,39 +14,47 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitial()){
+  LoginBloc() : super(LoginInitial()) {
     on<EmailChanged>(_onEmailChanged);
     on<PasswordChanged>(_onPasswordChanged);
     on<LoginButtonPressed>(_onLoginButtonPressed);
   }
+
   late String _email;
   late String _password;
   AuthRepository authRepository = AuthRepository();
-  Future<void> _onEmailChanged(EmailChanged event,Emitter<LoginState> emit)async{
-    _email=event.email;
+
+  Future<void> _onEmailChanged(
+      EmailChanged event, Emitter<LoginState> emit) async {
+    _email = event.email;
   }
-  Future<void> _onPasswordChanged(PasswordChanged event,Emitter<LoginState> emit)async{
-    _password=event.password;
+
+  Future<void> _onPasswordChanged(
+      PasswordChanged event, Emitter<LoginState> emit) async {
+    _password = event.password;
   }
-  Future<void> _onLoginButtonPressed(LoginButtonPressed event,Emitter<LoginState> emit)async{
-    try{
+
+  Future<void> _onLoginButtonPressed(
+      LoginButtonPressed event, Emitter<LoginState> emit) async {
+    try {
       print('logging in');
-      User? user =await authRepository.login(_email, _password);
+      User? user = await authRepository.login(_email, _password);
       emit(LoginLoading());
 
-      if (user==null){
+      if (user == null) {
         print('failed to login');
         emit(LoginInitial());
-      }else {
-        user.token=AppData.token;
-        Map<String,dynamic> userMap = user.toMap();
-        userMap['token']=AppData.token;
+      } else {
+        user.token = AppData.token;
+        Map<String, dynamic> userMap = user.toMap();
+        userMap['token'] = AppData.token;
 
-        SharedPreferences.getInstance().then((value) => value.setString('user', jsonEncode(userMap)));
+        SharedPreferences.getInstance()
+            .then((value) => value.setString('user', jsonEncode(userMap)));
         print('login succeed');
         emit(LoginSuccess(user));
       }
-    } catch (error){
+    } catch (error) {
       print(error);
       emit(LoginFailure(error.toString()));
     }

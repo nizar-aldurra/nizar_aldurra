@@ -12,26 +12,33 @@ class AuthRepository {
         'content-type': 'application/json',
         'accept': 'application/json',
       };
-  headerWithAuh() => {
-    'Authorization': 'Bearer ${AppData.token}',
-    'content-type': 'application/json',
-    'accept': 'application/json',
-  };
 
-  Future<User?> register(
-      String userName, String email, String password,String confirmPassword) async {
+  headerWithAuh() => {
+        'Authorization': 'Bearer ${AppData.token}',
+        'content-type': 'application/json',
+        'accept': 'application/json',
+      };
+
+  Future<User?> register(String userName, String email, String password,
+      String confirmPassword) async {
     var response = await http.post(
       Uri.parse('${AppData.baseURL}/$controller/register'),
       headers: header(),
-      body: jsonEncode({'name':userName,'email': email, 'password': password, 'confirmPassword':confirmPassword}),
+      body: jsonEncode({
+        'name': userName,
+        'email': email,
+        'password': password,
+        'confirmPassword': confirmPassword
+      }),
     );
-    if(response.statusCode==200){
-      AppData.token=jsonDecode(response.body)['token'];
-      User user= User.fromMap(jsonDecode(response.body)['user']);
-      user.token=AppData.token;
+    if (response.statusCode == 200) {
+      AppData.token = jsonDecode(response.body)['token'];
+      User user = User.fromMap(jsonDecode(response.body)['user']);
+      AppData.userId=user.id!;
+      user.token = AppData.token;
       print(user.email);
       return user;
-    }else {
+    } else {
       return null;
     }
   }
@@ -42,13 +49,14 @@ class AuthRepository {
       headers: header(),
       body: jsonEncode({'email': email, 'password': password}),
     );
-    if(response.statusCode==200){
-      AppData.token=jsonDecode(response.body)['token'];
-      User user= User.fromMap(jsonDecode(response.body)['user']);
-      user.token=AppData.token;
+    if (response.statusCode == 200) {
+      AppData.token = jsonDecode(response.body)['token'];
+      User user = User.fromMap(jsonDecode(response.body)['user']);
+      AppData.userId=user.id!;
+      user.token = AppData.token;
       print(user.email);
       return user;
-    }else {
+    } else {
       return null;
     }
   }
@@ -57,7 +65,8 @@ class AuthRepository {
     var response = await http.get(
         Uri.parse('${AppData.baseURL}/$controller/logout'),
         headers: headerWithAuh());
-    AppData.token='';
-    SharedPreferences.getInstance().then((value) => value.setString('user', '-1'));
+    AppData.token = '';
+    SharedPreferences.getInstance()
+        .then((value) => value.setString('user', '-1'));
   }
 }

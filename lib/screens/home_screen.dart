@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:nizar_aldurra/BloC/authentication/authentication_bloc.dart';
+import 'package:nizar_aldurra/BloC/like_post/like_post_bloc.dart';
+import 'package:nizar_aldurra/BloC/like_post/like_post_bloc.dart';
+import 'package:nizar_aldurra/app/app_data.dart';
 import 'package:nizar_aldurra/screens/comments_screen.dart';
+import 'package:nizar_aldurra/screens/user_screen.dart';
 import '../BloC/posts/posts_bloc.dart';
 import '../models/post.dart';
 import '../screens/add_post_screen.dart';
@@ -50,12 +54,11 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               ListTile(
-                title: const Text('Item 1'),
+                title: const Text('Profile'),
                 onTap: () {
-                  // Update the state of the app
-                  // ...
-                  // Then close the drawer
                   Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      UserScreen(userId: AppData.userId)),);
                 },
               ),
               ListTile(
@@ -98,14 +101,20 @@ class _PostsWidgetState extends State<PostsWidget> {
               body: Center(child: CircularProgressIndicator()));
         } else if (state is PostsSuccess) {
           List<Post> posts = state.posts;
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListView.builder(
-                itemCount: posts.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return postCard(index, posts);
-                }),
-          );
+          if (posts.isEmpty) {
+            return const Center(
+              child: Text('No Comments'),
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return postCard(index, posts);
+                  }),
+            );
+          }
         }
         return const Center(
           child: Text('Problem in Server'),
@@ -121,35 +130,66 @@ class _PostsWidgetState extends State<PostsWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            TextButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    UserScreen(userId: posts[index].userId!)),);
+              },
+              child: Text(
+                posts[index].userName!,
+                style: const TextStyle(fontSize: 30, color: Colors.black),
+              ),
+            ),
             Text(
               posts[index].title,
-              style: const TextStyle(fontSize: 30),
+              style: const TextStyle(fontSize: 22),
             ),
             Text(
               posts[index].publishedAt?.timeZoneName == null
                   ? 'null'
                   : DateFormat('dd/MM/yyyy  hh:mm')
-                      .format(posts[index].publishedAt!),
+                  .format(posts[index].publishedAt!),
               style: const TextStyle(fontSize: 18),
             ),
             Text(posts[index].body),
             Padding(
-              padding: const EdgeInsets.only(left: 14.0,right: 14),
+              padding: const EdgeInsets.only(left: 14.0, right: 14),
               child: Row(
                 children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: const Row(
-                      children: [Icon(Icons.thumb_up),SizedBox(width: 8,),Text('Like')],
-                    ),
+                  BlocBuilder<LikePostBloc, LikePostState>(
+                    builder: (context, state) {
+                      return TextButton(
+                        onPressed: () {
+                          context.read<LikePostBloc>().add(ChangeLikingStatus(posts[index].id!));
+                          posts[index].isLiked = !posts[index].isLiked;
+                        },
+                        child: Row(
+                          children: [
+                            Icon(posts[index].isLiked ? Icons.thumb_up : Icons
+                                .thumb_up_alt_outlined),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            const Text('Like'),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                   const Expanded(child: SizedBox()),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(context).pushNamed(CommentsScreen.routeName,arguments: {'post_id' : posts[index].id});
+                      Navigator.of(context).pushNamed(CommentsScreen.routeName,
+                          arguments: {'post_id': posts[index].id});
                     },
                     child: const Row(
-                      children: [Icon(Icons.comment),SizedBox(width: 8,),Text('Comment')],
+                      children: [
+                        Icon(Icons.comment),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text('Comment')
+                      ],
                     ),
                   ),
                 ],

@@ -20,11 +20,16 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
 
   Future<void> _onPostsLoad(PostsLoad event, Emitter<PostsState> emit) async {
     // try{
-      emit(PostsLoading());
-      var t=await postsRepository.getAll();
-      print('$t\n\n\n\n');
-      final List<Post> posts = (t['data']).map<Post>((e) => Post.fromMap(e)).toList();
-      emit(PostsSuccess(posts));
+    emit(PostsLoading());
+    var t = await postsRepository.getAll();
+    print('$t');
+    if (t == null) {
+      emit(PostsFailure('no comments'));
+    } else {
+      final List<Post> posts =
+          (t['data']).map<Post>((e) => Post.fromMap(e)).toList();
+        emit(PostsSuccess(posts));
+    }
   }
 
   Future<void> _onPostsUpdated(

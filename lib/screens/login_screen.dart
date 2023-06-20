@@ -16,7 +16,9 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      return Login(loginBloc: _loginBloc,);
+    return Login(
+      loginBloc: _loginBloc,
+    );
   }
 }
 
@@ -33,13 +35,17 @@ class Login extends StatelessWidget {
     return BlocBuilder<LoginBloc, LoginState>(
       bloc: _loginBloc,
       builder: (context, state) {
-        if(state is LoginInitial){
+        if (state is LoginInitial) {
           return LoginForm(_loginBloc);
-        } else if (state is LoginLoading){
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
-        } else if (state is LoginSuccess){
-          context.read<AuthenticationBloc>().add(AuthenticationLoggedIn(state.user));
-          return const Scaffold(body: Center(child: CircularProgressIndicator()));
+        } else if (state is LoginLoading) {
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
+        } else if (state is LoginSuccess) {
+          context
+              .read<AuthenticationBloc>()
+              .add(AuthenticationLoggedIn(state.user));
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
         } else {
           return LoginForm(_loginBloc);
         }

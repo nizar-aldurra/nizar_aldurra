@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class NiceButton extends StatelessWidget {
   String? text;
   Function()? onPress;

@@ -12,14 +12,15 @@ class StartAppScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationStatus>(
-        builder: (context, state) {
-          if (state == AuthenticationStatus.loading) {
-            return const Scaffold(body: Center(child: CircularProgressIndicator()));
-          }
-          return state == AuthenticationStatus.unauthenticated
-              ? LoginScreen()
-              : HomeScreen();
-        },
+      builder: (context, state) {
+        if (state == AuthenticationStatus.loading) {
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
+        }
+        return state == AuthenticationStatus.unauthenticated
+            ? LoginScreen()
+            : HomeScreen();
+      },
     );
   }
 }

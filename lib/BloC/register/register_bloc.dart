@@ -32,6 +32,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       UserNameChanged event, Emitter<RegisterState> emit) async {
     _userName = event.userName;
   }
+
   Future<void> _onEmailChanged(
       EmailChanged event, Emitter<RegisterState> emit) async {
     _email = event.email;
@@ -51,16 +52,18 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       RegisterButtonPressed event, Emitter<RegisterState> emit) async {
     try {
       emit(RegisterLoading());
-      User? user = await authRepository.register(_userName, _email, _password,_confirmPassword);
+      User? user = await authRepository.register(
+          _userName, _email, _password, _confirmPassword);
 
       if (user == null) {
         print('failed to register');
         emit(RegisterInitial());
       } else {
-        user.token=AppData.token;
-        Map<String,dynamic> userMap = user.toMap();
-        userMap['token']=AppData.token;
-        SharedPreferences.getInstance().then((value) => value.setString('user', jsonEncode(userMap)));
+        user.token = AppData.token;
+        Map<String, dynamic> userMap = user.toMap();
+        userMap['token'] = AppData.token;
+        SharedPreferences.getInstance()
+            .then((value) => value.setString('user', jsonEncode(userMap)));
         print('registered succeed');
         emit(RegisterSuccess(user));
       }

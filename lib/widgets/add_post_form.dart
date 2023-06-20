@@ -63,9 +63,9 @@ class AddPostForm extends StatelessWidget {
                     onPressed: () {
                       _addPostBloc.add(AddPostButtonPressed());
                       if (_formKey.currentState!.validate()) {
-                        if(state is! AddPostFailure){
+                        if (state is! AddPostFailure) {
                           Navigator.pop(context);
-                      }
+                        }
                       }
                     },
                     child: const Text('Add')),
