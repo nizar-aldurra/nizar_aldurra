@@ -38,13 +38,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       LoginButtonPressed event, Emitter<LoginState> emit) async {
     try {
       print('logging in');
-      User? user = await authRepository.login(_email, _password);
+      dynamic loginResponse = await authRepository.login(_email, _password);
       emit(LoginLoading());
 
-      if (user == null) {
-        print('failed to login');
-        emit(LoginInitial());
+      if (loginResponse.runtimeType == String) {
+        emit(LoginFailure(loginResponse));
       } else {
+        if (loginResponse.runtimeType != User){
+          emit(LoginFailure('error'));
+        }
+        User user = loginResponse as User;
         user.token = AppData.token;
         Map<String, dynamic> userMap = user.toMap();
         userMap['token'] = AppData.token;

@@ -44,22 +44,28 @@ class AuthRepository {
     }
   }
 
-  Future<User?> login(String email, String password) async {
+  Future<dynamic?> login(String email, String password) async {
     var response = await http.post(
       Uri.parse('${AppData.baseURL}/$controller/login'),
       headers: header(),
       body: jsonEncode({'email': email, 'password': password}),
     );
     if (response.statusCode == 200) {
-      AppData.token = jsonDecode(response.body)['token'];
-      User user = User.fromMap(jsonDecode(response.body)['user']);
+      User user;
+      try{
+        AppData.token = jsonDecode(response.body)['token'];
+        AppData.token = jsonDecode(response.body)['token'];
+        user = User.fromMap(jsonDecode(response.body)['user']);
+      }catch(error){
+        return 'The email or password is incorrect';
+      }
       AppData.userId = user.id!;
       user.token = AppData.token;
       AppData.isAdmin = user.isAdmin!;
       print(user.email);
       return user;
     } else {
-      return null;
+      return 'Email or password is not correct';
     }
   }
 

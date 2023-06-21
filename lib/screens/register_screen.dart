@@ -16,7 +16,7 @@ class RegisterScreen extends StatelessWidget {
       bloc: _registerBloc,
       builder: (context, state) {
         if (state is RegisterInitial) {
-          return RegisterForm(_registerBloc);
+          return RegisterForm(null,_registerBloc);
         } else if (state is RegisterLoading) {
           return const Scaffold(
               body: Center(child: CircularProgressIndicator()));
@@ -25,8 +25,12 @@ class RegisterScreen extends StatelessWidget {
                 AuthenticationSignedUp(state.user),
               );
           return HomeScreen();
-        } else {
-          return RegisterForm(_registerBloc);
+        } else if(state is RegisterFailure){
+          return RegisterForm(state.error,_registerBloc);
+        }
+        else {
+          return const Scaffold(
+              body: Center(child: Text('Server Error')));
         }
       },
     );

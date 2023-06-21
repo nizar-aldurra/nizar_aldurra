@@ -5,20 +5,18 @@ import '../BloC/register/register_bloc.dart';
 import 'Nice_button.dart';
 import 'nice_text_field.dart';
 
-class RegisterForm extends StatelessWidget {
+class RegisterForm extends StatefulWidget {
   RegisterBloc _registerBloc;
 
-  RegisterForm(this._registerBloc, {super.key});
+  RegisterForm(this.errorMessage,this._registerBloc, {super.key});
+String? errorMessage;
 
+  @override
+  State<RegisterForm> createState() => _RegisterFormState();
+}
+
+class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
-
-  String _name = '';
-
-  String _email = '';
-
-  String _password = '';
-
-  String _confirmedPassword = '';
 
   TextEditingController nameController = TextEditingController();
 
@@ -27,8 +25,13 @@ class RegisterForm extends StatelessWidget {
   TextEditingController passwordController = TextEditingController();
 
   TextEditingController confirmPasswordController = TextEditingController();
-  FocusNode myFocus = FocusNode();
 
+  FocusNode myFocus = FocusNode();
+  onchange() {
+    setState(() {
+      widget.errorMessage = null;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,6 +50,12 @@ class RegisterForm extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                widget.errorMessage == null
+                    ? const SizedBox()
+                    : Text(
+                  widget.errorMessage!,
+                  style: const TextStyle(color: Colors.red, fontSize: 18),
+                ),
                 NiceTextField(
                   hintText: 'enter the username',
                   labelText: 'User Name',
@@ -62,7 +71,8 @@ class RegisterForm extends StatelessWidget {
                     }
                   },
                   onChange: (value) {
-                    _registerBloc.add(UserNameChanged(value));
+                    onchange();
+                    widget._registerBloc.add(UserNameChanged(value));
                   },
                 ),
                 NiceTextField(
@@ -78,13 +88,14 @@ class RegisterForm extends StatelessWidget {
                     } else if (!RegExp(
                             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
                         .hasMatch(value)) {
-                      return "please insert a valide email format.";
+                      return "please insert a valid email format.";
                     } else {
                       return null;
                     }
                   },
                   onChange: (value) {
-                    _registerBloc.add(EmailChanged(value));
+                    onchange();
+                    widget._registerBloc.add(EmailChanged(value));
                   },
                 ),
                 NiceTextField(
@@ -107,7 +118,8 @@ class RegisterForm extends StatelessWidget {
                     }
                   },
                   onChange: (value) {
-                    _registerBloc.add(PasswordChanged(value));
+                    onchange();
+                    widget._registerBloc.add(PasswordChanged(value));
                   },
                 ),
                 NiceTextField(
@@ -129,7 +141,8 @@ class RegisterForm extends StatelessWidget {
                     }
                   },
                   onChange: (value) {
-                    _registerBloc.add(ConfirmPasswordChanged(value));
+                    onchange();
+                    widget._registerBloc.add(ConfirmPasswordChanged(value));
                   },
                 ),
                 const SizedBox(
@@ -146,8 +159,9 @@ class RegisterForm extends StatelessWidget {
                 NiceButton(
                   text: 'Register',
                   onPress: () {
+                    onchange();
                     if (_formKey.currentState!.validate()) {
-                      _registerBloc.add(RegisterButtonPressed());
+                      widget._registerBloc.add(RegisterButtonPressed());
                     }
                   },
                 ),
