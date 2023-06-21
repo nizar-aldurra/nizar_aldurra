@@ -71,10 +71,6 @@ class _LoginFormState extends State<LoginForm> {
                     return null;
                   }
                 },
-                onChange: (value) {
-                  onchange();
-                  widget.loginBloc.add(EmailChanged(value));
-                },
               ),
               NiceTextField(
                 hintText: 'enter the password',
@@ -89,10 +85,6 @@ class _LoginFormState extends State<LoginForm> {
                   } else {
                     return null;
                   }
-                },
-                onChange: (value) {
-                  onchange();
-                  widget.loginBloc.add(PasswordChanged(value));
                 },
               ),
               const SizedBox(
@@ -111,6 +103,7 @@ class _LoginFormState extends State<LoginForm> {
                 text: 'Login',
                 onPress: () {
                   if (_formKey.currentState!.validate()) {
+                    widget.loginBloc.set(emailController.value.text, passwordController.value.text);
                     widget.loginBloc.add(LoginButtonPressed());
                   }
                 },

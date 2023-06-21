@@ -51,14 +51,17 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   Future<void> _onRegisterButtonPressed(
       RegisterButtonPressed event, Emitter<RegisterState> emit) async {
     try {
-      emit(RegisterLoading());
-      User? user = await authRepository.register(
+      dynamic registerResponse = await authRepository.register(
           _userName, _email, _password, _confirmPassword);
+      emit(RegisterLoading());
 
-      if (user == null) {
-        print('failed to register');
-        emit(RegisterInitial());
+      if (registerResponse.runtimeType == String) {
+        emit(RegisterFailure(registerResponse));
       } else {
+        if (registerResponse.runtimeType != User) {
+          emit(RegisterFailure('error'));
+        }
+        User user = registerResponse as User;
         user.token = AppData.token;
         Map<String, dynamic> userMap = user.toMap();
         userMap['token'] = AppData.token;
@@ -68,8 +71,15 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
         emit(RegisterSuccess(user));
       }
     } catch (error) {
-      print(error);
-      emit(RegisterFailure(error.toString()));
+      print(error.toString());
+      emit(RegisterFailure('Server Error'));
     }
+  }
+
+  set(String name, String email, String password, String confirmPassword) {
+    _userName = name;
+    _email = email;
+    _password = password;
+    _confirmPassword = confirmPassword;
   }
 }

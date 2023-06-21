@@ -19,7 +19,7 @@ class AuthRepository {
         'accept': 'application/json',
       };
 
-  Future<User?> register(String userName, String email, String password,
+  Future<dynamic> register(String userName, String email, String password,
       String confirmPassword) async {
     var response = await http.post(
       Uri.parse('${AppData.baseURL}/$controller/register'),
@@ -32,15 +32,19 @@ class AuthRepository {
       }),
     );
     if (response.statusCode == 200) {
-      AppData.token = jsonDecode(response.body)['token'];
-      User user = User.fromMap(jsonDecode(response.body)['user']);
-      AppData.userId = user.id!;
-      user.token = AppData.token;
-      AppData.isAdmin = user.isAdmin!;
-      print(user.email);
-      return user;
+      try{
+        AppData.token = jsonDecode(response.body)['token'];
+        User user = User.fromMap(jsonDecode(response.body)['user']);
+        AppData.userId = user.id!;
+        user.token = AppData.token;
+        AppData.isAdmin = user.isAdmin!;
+        print(user.email);
+        return user;
+      }catch(error){
+        return "The email or password is incorrect";
+      }
     } else {
-      return null;
+      return 'The email or password is incorrect';
     }
   }
 
@@ -54,18 +58,17 @@ class AuthRepository {
       User user;
       try{
         AppData.token = jsonDecode(response.body)['token'];
-        AppData.token = jsonDecode(response.body)['token'];
         user = User.fromMap(jsonDecode(response.body)['user']);
+        AppData.userId = user.id!;
+        user.token = AppData.token;
+        AppData.isAdmin = user.isAdmin!;
+        print(user.email);
       }catch(error){
         return 'The email or password is incorrect';
       }
-      AppData.userId = user.id!;
-      user.token = AppData.token;
-      AppData.isAdmin = user.isAdmin!;
-      print(user.email);
       return user;
     } else {
-      return 'Email or password is not correct';
+      return 'The email or password is incorrect';
     }
   }
 
