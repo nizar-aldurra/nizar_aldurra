@@ -9,6 +9,7 @@ class PostsLoading extends PostsState {}
 
 class PostsSuccess extends PostsState {
   List<Post> posts;
+
   PostsSuccess(this.posts);
 }
 

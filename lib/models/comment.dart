@@ -6,14 +6,14 @@ class Comment {
   String? userName;
   DateTime? publishedAt;
 
-  Comment(
-      {this.id,
-      required this.body,
-      required this.postId,
-      this.publishedAt,
-      this.userId,
-      this.userName,
-      });
+  Comment({
+    this.id,
+    required this.body,
+    required this.postId,
+    this.publishedAt,
+    this.userId,
+    this.userName,
+  });
 
   Map<String, dynamic> toMap() {
     return {

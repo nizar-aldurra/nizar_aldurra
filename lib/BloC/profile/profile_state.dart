@@ -11,7 +11,7 @@ class ProfileSuccess extends ProfileState {
   List<Post> posts;
   User user;
 
-  ProfileSuccess(this.posts,this.user);
+  ProfileSuccess(this.posts, this.user);
 }
 
 class ProfileFailure extends ProfileState {

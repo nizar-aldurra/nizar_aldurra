@@ -163,9 +163,9 @@ class _CommentsWidgetState extends State<CommentsWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Comment writer',
-              style: TextStyle(fontSize: 30),
+            Text(
+              comments[index].userName!,
+              style: const TextStyle(fontSize: 30),
             ),
             Text(
               comments[index].publishedAt?.timeZoneName == null

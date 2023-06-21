@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class NiceTextField extends StatelessWidget {
   String? hintText;
+  String? initialValue;
   String? labelText;
   IconData? icon;
   IconData? suffixIcon;
@@ -14,7 +15,9 @@ class NiceTextField extends StatelessWidget {
   int? maxLines;
   TextEditingController? controller;
   bool? obscureText;
-
+  bool? autofocus ;
+  FocusNode? focusNode;
+  void Function()? onTap;
   NiceTextField({
     this.hintText,
     this.labelText,
@@ -29,6 +32,10 @@ class NiceTextField extends StatelessWidget {
     this.suffixIconCallback,
     this.obscureText,
     this.onChange,
+    this.initialValue,
+    this.autofocus =false,
+    this.focusNode,
+    this.onTap,
   });
 
   @override
@@ -37,12 +44,17 @@ class NiceTextField extends StatelessWidget {
       width: width,
       height: height,
       child: TextFormField(
+        onTap: onTap,
+        autofocus: autofocus!,
+        focusNode: focusNode,
+        initialValue: initialValue,
         onChanged: onChange,
         keyboardType: keyboardType ?? TextInputType.text,
         maxLines: maxLines ?? 1,
         controller: controller,
         validator: validator,
         obscureText: obscureText ?? false,
+        textInputAction: TextInputAction.next,
         decoration: InputDecoration(
           labelText: labelText,
           hintText: hintText,

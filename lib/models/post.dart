@@ -14,7 +14,7 @@ class Post {
       required this.title,
       required this.body,
       this.publishedAt,
-      this.isLiked=false});
+      this.isLiked = false});
 
   Map<String, dynamic> toMap() {
     return {

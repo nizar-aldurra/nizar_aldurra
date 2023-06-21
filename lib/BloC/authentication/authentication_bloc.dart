@@ -54,6 +54,7 @@ class AuthenticationBloc
       print(user.toString());
       AppData.token = user.token!;
       AppData.userId = user.id!;
+      AppData.isAdmin = user.isAdmin!;
       emit(AuthenticationStatus.authenticated);
     } else {
       emit(AuthenticationStatus.unauthenticated);

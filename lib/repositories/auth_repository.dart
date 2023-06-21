@@ -34,8 +34,9 @@ class AuthRepository {
     if (response.statusCode == 200) {
       AppData.token = jsonDecode(response.body)['token'];
       User user = User.fromMap(jsonDecode(response.body)['user']);
-      AppData.userId=user.id!;
+      AppData.userId = user.id!;
       user.token = AppData.token;
+      AppData.isAdmin = user.isAdmin!;
       print(user.email);
       return user;
     } else {
@@ -52,8 +53,9 @@ class AuthRepository {
     if (response.statusCode == 200) {
       AppData.token = jsonDecode(response.body)['token'];
       User user = User.fromMap(jsonDecode(response.body)['user']);
-      AppData.userId=user.id!;
+      AppData.userId = user.id!;
       user.token = AppData.token;
+      AppData.isAdmin = user.isAdmin!;
       print(user.email);
       return user;
     } else {

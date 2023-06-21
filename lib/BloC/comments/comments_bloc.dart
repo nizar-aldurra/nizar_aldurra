@@ -25,7 +25,7 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
     } else {
       final List<Comment> comments =
           (t['data']).map<Comment>((e) => Comment.fromMap(e)).toList();
-        emit(CommentsSuccess(comments));
+      emit(CommentsSuccess(comments));
     }
   }
 

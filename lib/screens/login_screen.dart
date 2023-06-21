@@ -36,7 +36,7 @@ class Login extends StatelessWidget {
       bloc: _loginBloc,
       builder: (context, state) {
         if (state is LoginInitial) {
-          return LoginForm(_loginBloc);
+          return LoginForm(null,_loginBloc);
         } else if (state is LoginLoading) {
           return const Scaffold(
               body: Center(child: CircularProgressIndicator()));
@@ -46,8 +46,11 @@ class Login extends StatelessWidget {
               .add(AuthenticationLoggedIn(state.user));
           return const Scaffold(
               body: Center(child: CircularProgressIndicator()));
-        } else {
-          return LoginForm(_loginBloc);
+        } else if(state is LoginFailure){
+          return LoginForm(state.error,_loginBloc);
+        }else{
+          return const Scaffold(
+              body: Center(child: Text('Server Error')));
         }
       },
     );

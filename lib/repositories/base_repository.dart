@@ -54,7 +54,7 @@ class BaseRepository {
 
   updateData(dynamic data) async {
     var response = await http.post(
-      Uri.parse('${AppData.baseURL}/$controller/create'),
+      Uri.parse('${AppData.baseURL}/$controller/update'),
       headers: header(),
       body: data.toMap(),
     );

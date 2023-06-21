@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:nizar_aldurra/BloC/authentication/authentication_bloc.dart';
-import 'package:nizar_aldurra/BloC/like_post/like_post_bloc.dart';
+import 'package:nizar_aldurra/BloC/deletePost/delete_post_bloc.dart';
 import 'package:nizar_aldurra/BloC/like_post/like_post_bloc.dart';
 import 'package:nizar_aldurra/app/app_data.dart';
 import 'package:nizar_aldurra/screens/comments_screen.dart';
@@ -40,32 +40,46 @@ class HomeScreen extends StatelessWidget {
           // Add a ListView to the drawer. This ensures the user can scroll
           // through the options in the drawer if there isn't enough vertical
           // space to fit everything.
-          child: ListView(
-            // Important: Remove any padding from the ListView.
-            padding: EdgeInsets.zero,
+          child: Column(
             children: [
-              const DrawerHeader(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: Text(
-                  'Social Media App',
-                  style: TextStyle(fontSize: 30),
+              Container(
+                height: MediaQuery.of(context).size.height * 0.2,
+                color: Theme.of(context).primaryColor,
+                child: const Center(
+                  child: Text(
+                    'Social Media App',
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ),
               ),
-              ListTile(
-                title: const Text('Profile'),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                      UserScreen(userId: AppData.userId)),);
-                },
+              Expanded(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.person),
+                      title: const Text('Profile'),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  UserScreen(userId: AppData.userId)),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-              ListTile(
-                title: const Text('Logout'),
-                onTap: () {
-                  context.read<AuthenticationBloc>().logout();
-                },
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  onTap: () {
+                    context.read<AuthenticationBloc>().logout();
+                  },
+                ),
               ),
             ],
           ),
@@ -111,7 +125,7 @@ class _PostsWidgetState extends State<PostsWidget> {
               child: ListView.builder(
                   itemCount: posts.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return postCard(index, posts);
+                    return postCard(context, index, posts);
                   }),
             );
           }
@@ -123,35 +137,84 @@ class _PostsWidgetState extends State<PostsWidget> {
     );
   }
 
-  Widget postCard(int index, List<Post> posts) {
+  Widget postCard(BuildContext context, int index, List<Post> posts) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    UserScreen(userId: posts[index].userId!)),);
-              },
-              child: Text(
-                posts[index].userName!,
-                style: const TextStyle(fontSize: 30, color: Colors.black),
-              ),
-            ),
-            Text(
-              posts[index].title,
-              style: const TextStyle(fontSize: 22),
-            ),
-            Text(
-              posts[index].publishedAt?.timeZoneName == null
-                  ? 'null'
-                  : DateFormat('dd/MM/yyyy  hh:mm')
-                  .format(posts[index].publishedAt!),
-              style: const TextStyle(fontSize: 18),
-            ),
-            Text(posts[index].body),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    UserScreen(userId: posts[index].userId!)),
+                          );
+                        },
+                        child: Text(
+                          posts[index].userName!,
+                          style: const TextStyle(
+                              fontSize: 30, color: Colors.black),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              posts[index].title,
+                              style: const TextStyle(fontSize: 22),
+                            ),
+                            Text(
+                              posts[index].publishedAt?.timeZoneName == null
+                                  ? 'null'
+                                  : DateFormat('dd/MM/yyyy  hh:mm')
+                                      .format(posts[index].publishedAt!),
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                            Text(posts[index].body),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  AppData.isAdmin
+                      ? BlocProvider(
+                    create: (context) => DeletePostBloc(),
+                    child: BlocBuilder<DeletePostBloc, DeletePostState>(
+                      builder: (context, state) {
+                        return PopupMenuButton(
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              const PopupMenuItem<String>(
+                                  value: 'delete', child: Text('Delete')),
+                            ];
+                          },
+                          onSelected: (String value) {
+                            if (value == 'delete') {
+                              context.read<DeletePostBloc>().add(DeletePost(posts[index].id!));
+                              context
+                                  .read<PostsBloc>()
+                                  .add(PostsLoad());
+                            }
+                            print(value);
+                          },
+                          icon: const Icon(Icons.more_vert),
+                        );
+                      },
+                    ),
+                  )
+                      : const SizedBox(),
+                ]),
             Padding(
               padding: const EdgeInsets.only(left: 14.0, right: 14),
               child: Row(
@@ -160,13 +223,16 @@ class _PostsWidgetState extends State<PostsWidget> {
                     builder: (context, state) {
                       return TextButton(
                         onPressed: () {
-                          context.read<LikePostBloc>().add(ChangeLikingStatus(posts[index].id!));
+                          context
+                              .read<LikePostBloc>()
+                              .add(ChangeLikingStatus(posts[index].id!));
                           posts[index].isLiked = !posts[index].isLiked;
                         },
                         child: Row(
                           children: [
-                            Icon(posts[index].isLiked ? Icons.thumb_up : Icons
-                                .thumb_up_alt_outlined),
+                            Icon(posts[index].isLiked
+                                ? Icons.thumb_up
+                                : Icons.thumb_up_alt_outlined),
                             const SizedBox(
                               width: 8,
                             ),

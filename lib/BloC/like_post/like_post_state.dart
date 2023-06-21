@@ -8,7 +8,8 @@ class LikePostInitial extends LikePostState {}
 class LikePostLoading extends LikePostState {}
 
 class LikePostSuccess extends LikePostState {
-  bool isLiked ;
+  bool isLiked;
+
   LikePostSuccess(this.isLiked);
 }
 

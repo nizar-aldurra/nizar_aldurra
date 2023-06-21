@@ -17,9 +17,11 @@ class PostsRepository extends BaseRepository {
     result = jsonDecode(response.body);
     return result;
   }
+
   changeLikingStatus(String postId) async {
     var response = await http.get(
-        Uri.parse('${AppData.baseURL}/$controller/$postId/change_liking_status'),
+        Uri.parse(
+            '${AppData.baseURL}/$controller/$postId/change_liking_status'),
         headers: header());
     return jsonDecode(response.body);
   }

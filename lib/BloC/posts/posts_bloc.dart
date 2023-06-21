@@ -28,7 +28,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     } else {
       final List<Post> posts =
           (t['data']).map<Post>((e) => Post.fromMap(e)).toList();
-        emit(PostsSuccess(posts));
+      emit(PostsSuccess(posts));
     }
   }
 

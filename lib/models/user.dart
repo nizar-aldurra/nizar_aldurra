@@ -4,10 +4,11 @@ class User {
   String email;
   String? dateOfBirth;
   String? token;
+  bool? isAdmin;
 
   @override
   String toString() {
-    return 'id: $id, name: $name, email: $email, date of birth : $dateOfBirth, token: $token';
+    return 'id: $id, name: $name, email: $email, date of birth : $dateOfBirth, token: $token ,is admin $isAdmin';
   }
 
   User(
@@ -15,13 +16,15 @@ class User {
       required this.name,
       required this.email,
       this.dateOfBirth,
-      this.token});
+      this.token,
+      this.isAdmin});
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'name': name,
       'email': email,
+      'isAdmin': isAdmin,
       'date_of_birth': dateOfBirth,
     };
   }
@@ -31,6 +34,7 @@ class User {
       'id': id,
       'name': name,
       'email': email,
+      'isAdmin': isAdmin,
       'date_of_birth': dateOfBirth,
       'token': token,
     };
@@ -41,6 +45,7 @@ class User {
       id: map['id'].toString(),
       name: map['name'] as String,
       email: map['email'] as String,
+      isAdmin: map['isAdmin'] as bool,
       dateOfBirth: map['birth_day'].toString(),
     );
   }
@@ -50,6 +55,7 @@ class User {
       id: map['id'] as String,
       name: map['name'] as String,
       email: map['email'] as String,
+      isAdmin: map['isAdmin'] as bool,
       dateOfBirth: map['birth_day']?.toString(),
       token: map['token'].toString(),
     );
