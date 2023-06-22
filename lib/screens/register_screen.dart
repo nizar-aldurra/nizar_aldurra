@@ -30,7 +30,7 @@ class RegisterScreen extends StatelessWidget {
         }
         else {
           return const Scaffold(
-              body: Center(child: Text('Server Error')));
+              body: Center(child: Text('Connection Error')));
         }
       },
     );

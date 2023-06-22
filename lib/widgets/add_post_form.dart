@@ -9,9 +9,6 @@ class AddPostForm extends StatelessWidget {
 
   final _formKey = GlobalKey<FormState>();
 
-  String _title = '';
-
-  String _description = '';
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +22,7 @@ class AddPostForm extends StatelessWidget {
             child: Column(
               children: [
                 TextFormField(
+                  textInputAction: TextInputAction.next,
                   decoration: const InputDecoration(
                     labelText: 'title',
                   ),

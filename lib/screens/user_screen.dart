@@ -5,7 +5,8 @@ import 'package:nizar_aldurra/BloC/deletePost/delete_post_bloc.dart';
 import 'package:nizar_aldurra/BloC/profile/profile_bloc.dart';
 import 'package:nizar_aldurra/app/app_data.dart';
 import 'package:nizar_aldurra/models/post.dart';
-import 'package:nizar_aldurra/screens/update_profile_screen.dart';
+import 'package:nizar_aldurra/screens/update_Info_screen.dart';
+import 'package:nizar_aldurra/screens/update_Password_screen.dart';
 import 'comments_screen.dart';
 
 class UserScreen extends StatefulWidget {
@@ -69,16 +70,53 @@ class _UserScreenState extends State<UserScreen> {
                             ),
                           ),
                         ),
-                        IconButton(
-                            onPressed: () {
+                         // IconButton(
+                         //        onPressed: () {
+                         //          Navigator.of(context).push(
+                         //            MaterialPageRoute(
+                         //                builder: (context) => UpdateInfoScreen(
+                         //                    state.user.name, state.user.email)),
+                         //          );
+                         //        },
+                         //        icon: const Icon(Icons.edit))
+                           (userId == AppData.userId || AppData.isAdmin)
+                             ?PopupMenuButton(
+                          itemBuilder: (BuildContext context) {
+                            return [
+                              const PopupMenuItem<String>(
+                                  value: 'editInfo', child: Row(
+                                    children: [
+                                      Icon(Icons.person),
+                                      Text('Update the information'),
+                                    ],
+                                  )),
+                              const PopupMenuItem<String>(
+                                  value: 'editPassword', child: Row(
+                                    children: [
+                                      Icon(Icons.lock_outline),
+                                      Text('update the password'),
+                                    ],
+                                  )),
+                            ];
+                          },
+                          onSelected: (String value) {
+                            if (value == 'editInfo') {
+                              Navigator.of(context).push(
+                                           MaterialPageRoute(
+                                               builder: (context) => UpdateInfoScreen(
+                                                   state.user.name, state.user.email)),
+                                         );
+                            } else if(value == 'editPassword'){
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        UpdateProfile(
-                                            state.user.name, state.user.email)),
+                                    builder: (context) => UpdatePasswordScreen()),
                               );
-                            },
-                            icon: const Icon(Icons.edit)),
+                            }
+                            print(value);
+                          },
+                          icon: const Icon(Icons.edit),
+                        )
+                            : const SizedBox(),
                       ],
                     ),
                   ),
@@ -115,16 +153,17 @@ class _UserScreenState extends State<UserScreen> {
                             ),
                           ),
                         ),
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        UpdateProfile(
+                        (userId == AppData.userId || AppData.isAdmin)
+                            ? IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) => UpdateInfoScreen(
                                             state.user.name, state.user.email)),
-                              );
-                            },
-                            icon: const Icon(Icons.edit)),
+                                  );
+                                },
+                                icon: const Icon(Icons.edit))
+                            : const SizedBox(),
                       ],
                     ),
                   ),
@@ -141,9 +180,11 @@ class _UserScreenState extends State<UserScreen> {
                 ],
               );
             }
+          } else if (state is ProfileFailure) {
+            return Center(child: Text(state.error));
           }
           return const Center(
-            child: Text('Problem in Server'),
+            child: Text('Problem in Connection'),
           );
         },
       ),
@@ -161,90 +202,118 @@ class _UserScreenState extends State<UserScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          posts[index].userName!,
-                          style: const TextStyle(
-                              fontSize: 30, color: Colors.black),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            posts[index].userName!,
+                            style: const TextStyle(
+                                fontSize: 30, color: Colors.black),
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              posts[index].title,
-                              style: const TextStyle(fontSize: 22),
-                            ),
-                            Text(
-                              posts[index].publishedAt?.timeZoneName == null
-                                  ? 'null'
-                                  : DateFormat('dd/MM/yyyy  HH:mm:a')
-                                  .format(posts[index].publishedAt!),
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                            Text(posts[index].body),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                posts[index].title,
+                                style: const TextStyle(fontSize: 22),
+                              ),
+                              Text(
+                                posts[index].publishedAt?.timeZoneName == null
+                                    ? 'null'
+                                    : DateFormat('dd/MM/yyyy  HH:mm:a')
+                                        .format(posts[index].publishedAt!),
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(14.0),
+                                child: Text(posts[index].body),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   (userId == AppData.userId || AppData.isAdmin)
                       ? BlocProvider(
-                    create: (context) => DeletePostBloc(),
-                    child: BlocBuilder<DeletePostBloc, DeletePostState>(
-                      builder: (context, state) {
-                        return PopupMenuButton(
-                          itemBuilder: (BuildContext context) {
-                            return [
-                              const PopupMenuItem<String>(
-                                  value: 'delete', child: Text('Delete')),
-                            ];
-                          },
-                          onSelected: (String value) {
-                            if (value == 'delete') {
-                              context.read<DeletePostBloc>().add(DeletePost(posts[index].id!));
-                              context
-                                  .read<ProfileBloc>()
-                                  .add(ProfileLoad(userId));
-                            } else {
-                              context
-                                  .read<ProfileBloc>()
-                                  .add(ProfileLoad(userId));
-                            }
-                            print(value);
-                          },
-                          icon: const Icon(Icons.more_vert),
-                        );
-                      },
-                    ),
-                  )
+                          create: (context) => DeletePostBloc(),
+                          child: BlocBuilder<DeletePostBloc, DeletePostState>(
+                            builder: (context, state) {
+                              return PopupMenuButton(
+                                itemBuilder: (BuildContext context) {
+                                  return [
+                                    const PopupMenuItem<String>(
+                                        value: 'delete', child: Text('Delete')),
+                                  ];
+                                },
+                                onSelected: (String value) {
+                                  if (value == 'delete') {
+                                    context
+                                        .read<DeletePostBloc>()
+                                        .add(DeletePost(posts[index].id!));
+                                    context
+                                        .read<ProfileBloc>()
+                                        .add(ProfileLoad(userId));
+                                  } else {
+                                    context
+                                        .read<ProfileBloc>()
+                                        .add(ProfileLoad(userId));
+                                  }
+                                  print(value);
+                                },
+                                icon: const Icon(Icons.more_vert),
+                              );
+                            },
+                          ),
+                        )
                       : const SizedBox(),
                 ]),
             Padding(
               padding: const EdgeInsets.only(left: 14.0, right: 14),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(CommentsScreen.routeName,
-                          arguments: {'post_id': posts[index].id});
-                    },
-                    child: const Row(
-                      children: [
-                        Icon(Icons.comment),
-                        SizedBox(
-                          width: 8,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${posts[index].likesNum} likes'),
+                      Text('${posts[index].commentsNum} comments'),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextButton(
+                        onPressed: () async {
+                          dynamic commentsNum = await Navigator.of(context)
+                              .pushNamed(CommentsScreen.routeName, arguments: {
+                            'post_id': posts[index].id,
+                            'commentsNum': posts[index].commentsNum
+                          });
+                          setState(() {
+                            if (commentsNum != null &&
+                                commentsNum.runtimeType == int) {
+                              print(commentsNum);
+                              posts[index].commentsNum = commentsNum;
+                            }
+                          });
+                        },
+                        child: const Row(
+                          children: [
+                            Icon(Icons.comment),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Text('Comment')
+                          ],
                         ),
-                        Text('Comment')
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),

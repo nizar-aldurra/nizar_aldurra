@@ -131,7 +131,7 @@ class _PostsWidgetState extends State<PostsWidget> {
           }
         }
         return const Center(
-          child: Text('Problem in Server'),
+          child: Text('Problem in Connection'),
         );
       },
     );
@@ -148,115 +148,147 @@ class _PostsWidgetState extends State<PostsWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    UserScreen(userId: posts[index].userId!)),
-                          );
-                        },
-                        child: Text(
-                          posts[index].userName!,
-                          style: const TextStyle(
-                              fontSize: 30, color: Colors.black),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      UserScreen(userId: posts[index].userId!)),
+                            );
+                          },
+                          child: Text(
+                            posts[index].userName!,
+                            style: const TextStyle(
+                                fontSize: 30, color: Colors.black),
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              posts[index].title,
-                              style: const TextStyle(fontSize: 22),
-                            ),
-                            Text(
-                              posts[index].publishedAt?.timeZoneName == null
-                                  ? 'null'
-                                  : DateFormat('dd/MM/yyyy  hh:mm')
-                                      .format(posts[index].publishedAt!),
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                            Text(posts[index].body),
-                          ],
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                posts[index].title,
+                                style: const TextStyle(fontSize: 22),
+                              ),
+                              Text(
+                                posts[index].publishedAt?.timeZoneName == null
+                                    ? 'null'
+                                    : DateFormat('dd/MM/yyyy  HH:mm:a')
+                                        .format(posts[index].publishedAt!),
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(14.0),
+                                child: Text(posts[index].body),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   AppData.isAdmin
                       ? BlocProvider(
-                    create: (context) => DeletePostBloc(),
-                    child: BlocBuilder<DeletePostBloc, DeletePostState>(
-                      builder: (context, state) {
-                        return PopupMenuButton(
-                          itemBuilder: (BuildContext context) {
-                            return [
-                              const PopupMenuItem<String>(
-                                  value: 'delete', child: Text('Delete')),
-                            ];
-                          },
-                          onSelected: (String value) {
-                            if (value == 'delete') {
-                              context.read<DeletePostBloc>().add(DeletePost(posts[index].id!));
-                              context
-                                  .read<PostsBloc>()
-                                  .add(PostsLoad());
-                            }
-                            print(value);
-                          },
-                          icon: const Icon(Icons.more_vert),
-                        );
-                      },
-                    ),
-                  )
+                          create: (context) => DeletePostBloc(),
+                          child: BlocBuilder<DeletePostBloc, DeletePostState>(
+                            builder: (context, state) {
+                              return PopupMenuButton(
+                                itemBuilder: (BuildContext context) {
+                                  return [
+                                    const PopupMenuItem<String>(
+                                        value: 'delete', child: Text('Delete')),
+                                  ];
+                                },
+                                onSelected: (String value) {
+                                  if (value == 'delete') {
+                                    context
+                                        .read<DeletePostBloc>()
+                                        .add(DeletePost(posts[index].id!));
+                                    context.read<PostsBloc>().add(PostsLoad());
+                                  }
+                                  print(value);
+                                },
+                                icon: const Icon(Icons.more_vert),
+                              );
+                            },
+                          ),
+                        )
                       : const SizedBox(),
                 ]),
             Padding(
               padding: const EdgeInsets.only(left: 14.0, right: 14),
-              child: Row(
+              child: Column(
                 children: [
-                  BlocBuilder<LikePostBloc, LikePostState>(
-                    builder: (context, state) {
-                      return TextButton(
-                        onPressed: () {
-                          context
-                              .read<LikePostBloc>()
-                              .add(ChangeLikingStatus(posts[index].id!));
-                          posts[index].isLiked = !posts[index].isLiked;
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${posts[index].likesNum} likes'),
+                      Text('${posts[index].commentsNum} comments'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      BlocBuilder<LikePostBloc, LikePostState>(
+                        builder: (context, state) {
+                          return TextButton(
+                            onPressed: () {
+                              context
+                                  .read<LikePostBloc>()
+                                  .add(ChangeLikingStatus(posts[index].id!));
+                              setState(() {
+                                if (posts[index].isLiked == true) {
+                                  posts[index].likesNum =
+                                      posts[index].likesNum! - 1;
+                                } else {
+                                  posts[index].likesNum =
+                                      posts[index].likesNum! + 1;
+                                }
+                              });
+                              posts[index].isLiked = !posts[index].isLiked;
+                            },
+                            child: Row(
+                              children: [
+                                Icon(posts[index].isLiked
+                                    ? Icons.thumb_up
+                                    : Icons.thumb_up_alt_outlined),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                const Text('Like'),
+                              ],
+                            ),
+                          );
                         },
-                        child: Row(
+                      ),
+                      const Expanded(child: SizedBox()),
+                      TextButton(
+                        onPressed: () async{
+                          dynamic commentsNum= await Navigator.of(context).pushNamed(
+                              CommentsScreen.routeName,
+                              arguments: {'post_id': posts[index].id,'commentsNum':posts[index].commentsNum});
+                          setState(() {
+                            if(commentsNum != null && commentsNum.runtimeType == int){
+                              print(commentsNum);
+                              posts[index].commentsNum=commentsNum;
+                            }
+                          });
+                        },
+                        child: const Row(
                           children: [
-                            Icon(posts[index].isLiked
-                                ? Icons.thumb_up
-                                : Icons.thumb_up_alt_outlined),
-                            const SizedBox(
+                            Icon(Icons.comment),
+                            SizedBox(
                               width: 8,
                             ),
-                            const Text('Like'),
+                            Text('Comment')
                           ],
                         ),
-                      );
-                    },
-                  ),
-                  const Expanded(child: SizedBox()),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed(CommentsScreen.routeName,
-                          arguments: {'post_id': posts[index].id});
-                    },
-                    child: const Row(
-                      children: [
-                        Icon(Icons.comment),
-                        SizedBox(
-                          width: 8,
-                        ),
-                        Text('Comment')
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),

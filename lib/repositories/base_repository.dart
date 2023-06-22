@@ -73,5 +73,6 @@ class BaseRepository {
       Uri.parse('${AppData.baseURL}/$controller/$id'),
       headers: header(),
     );
+    print(jsonDecode(response.body));
   }
 }

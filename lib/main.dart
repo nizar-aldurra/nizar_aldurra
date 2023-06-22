@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nizar_aldurra/BloC/authentication/authentication_bloc.dart';
 import 'package:nizar_aldurra/BloC/like_post/like_post_bloc.dart';
 import 'package:nizar_aldurra/BloC/profile/profile_bloc.dart';
-import 'package:nizar_aldurra/BloC/update_profile/update_profile_bloc.dart';
+import 'package:nizar_aldurra/BloC/update_info/update_info_bloc.dart';
 import 'package:nizar_aldurra/screens/add_post_screen.dart';
 import 'package:nizar_aldurra/screens/comments_screen.dart';
 import 'package:nizar_aldurra/screens/home_screen.dart';
@@ -35,7 +35,7 @@ void main() {
           create: (context) => LikePostBloc(),
         ),
         BlocProvider(
-          create: (context) => UpdateProfileBloc(),
+          create: (context) => UpdateInfoBloc(),
         ),
       ],
       child: const MainApp(),

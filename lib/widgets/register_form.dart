@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nizar_aldurra/screens/login_screen.dart';
 
 import '../BloC/register/register_bloc.dart';
 import 'Nice_button.dart';
@@ -8,8 +7,9 @@ import 'nice_text_field.dart';
 class RegisterForm extends StatefulWidget {
   RegisterBloc _registerBloc;
 
-  RegisterForm(this.errorMessage,this._registerBloc, {super.key});
-String? errorMessage;
+  RegisterForm(this.errorMessage, this._registerBloc, {super.key});
+
+  String? errorMessage;
 
   @override
   State<RegisterForm> createState() => _RegisterFormState();
@@ -27,11 +27,13 @@ class _RegisterFormState extends State<RegisterForm> {
   TextEditingController confirmPasswordController = TextEditingController();
 
   FocusNode myFocus = FocusNode();
+
   onchange() {
     setState(() {
       widget.errorMessage = null;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,9 +55,9 @@ class _RegisterFormState extends State<RegisterForm> {
                 widget.errorMessage == null
                     ? const SizedBox()
                     : Text(
-                  widget.errorMessage!,
-                  style: const TextStyle(color: Colors.red, fontSize: 18),
-                ),
+                        widget.errorMessage!,
+                        style: const TextStyle(color: Colors.red, fontSize: 18),
+                      ),
                 NiceTextField(
                   hintText: 'enter the username',
                   labelText: 'User Name',

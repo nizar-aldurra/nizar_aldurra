@@ -29,7 +29,7 @@ class Comment {
       postId: map['post_id'].toString(),
       userId: map['user_id'].toString(),
       userName: map['user_name'].toString(),
-      publishedAt: DateTime.parse(map['created_at']).toUtc(),
+      publishedAt: DateTime.parse(map['created_at']).toLocal(),
     );
   }
 }

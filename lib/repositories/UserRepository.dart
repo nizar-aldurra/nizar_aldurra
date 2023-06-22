@@ -18,14 +18,28 @@ class UserRepository extends BaseRepository {
     return result;
   }
 
-  updateUser(String userName, String email, String password) async {
+  UpdateInfoScreen(String userName, String email) async {
     var response =
-        await http.post(Uri.parse('${AppData.baseURL}/$controller/update'),
+        await http.post(Uri.parse('${AppData.baseURL}/$controller/UpdateInfoScreen'),
             headers: header(),
             body: jsonEncode({
               'name': userName,
               'email': email,
-              'password': password,
+            }));
+    print(jsonDecode(response.body));
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  updatePassword(String currentPassword,String newPassword,) async {
+    var response =
+        await http.post(Uri.parse('${AppData.baseURL}/$controller/updatePassword'),
+            headers: header(),
+            body: jsonEncode({
+              'current_password' : currentPassword,
+              'new_password' : newPassword,
             }));
     print(jsonDecode(response.body));
     if (response.statusCode == 200) {

@@ -4,17 +4,22 @@ class Post {
   String? userName;
   String title;
   String body;
+  int? likesNum;
+  int? commentsNum;
   bool isLiked;
   DateTime? publishedAt;
 
-  Post(
-      {this.id,
-      this.userId,
-      this.userName,
-      required this.title,
-      required this.body,
-      this.publishedAt,
-      this.isLiked = false});
+  Post({
+    this.id,
+    this.userId,
+    this.userName,
+    required this.title,
+    required this.body,
+    this.publishedAt,
+    this.isLiked = false,
+    this.commentsNum,
+    this.likesNum,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -36,7 +41,9 @@ class Post {
       title: map['title'].toString(),
       body: map['body'].toString(),
       isLiked: map['is_liked'] as bool,
-      publishedAt: DateTime.parse(map['created_at']).toUtc(),
+      likesNum: map['likes'] as int,
+      commentsNum: map['comments'] as int,
+      publishedAt: DateTime.parse(map['created_at']).toLocal(),
     );
   }
 }

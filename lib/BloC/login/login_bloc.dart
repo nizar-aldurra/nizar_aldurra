@@ -59,7 +59,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       }
     } catch (error) {
       print(error);
-      emit(LoginFailure('Server Error'));
+      emit(LoginFailure('Connection Error'));
     }
   }
   set(String email,String password){

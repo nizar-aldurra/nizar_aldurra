@@ -72,7 +72,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       }
     } catch (error) {
       print(error.toString());
-      emit(RegisterFailure('Server Error'));
+      emit(RegisterFailure('Connection Error'));
     }
   }
 

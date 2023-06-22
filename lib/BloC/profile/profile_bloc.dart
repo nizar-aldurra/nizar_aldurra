@@ -23,19 +23,30 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
   Future<void> _onProfileLoad(
       ProfileLoad event, Emitter<ProfileState> emit) async {
-    // try{
     emit(ProfileLoading());
-    var t = await userRepository.getUserPosts(event.userId);
-    print('$t');
-    if (t == null) {
-      emit(ProfileFailure('no comments'));
-    } else {
-      final List<Post> posts =
-          (t['data']).map<Post>((e) => Post.fromMap(e)).toList();
-      final User user = User.fromMap(t['user']);
-      AppData.isAdmin = user.isAdmin!;
-      emit(ProfileSuccess(posts, user));
-    }
+    // try {
+      var t = await userRepository.getUserPosts(event.userId);
+      print('$t');
+      if (t == null) {
+        emit(ProfileFailure('no Posts'));
+      } else {
+        // try {
+          final List<Post> posts =
+              (t['data']).map<Post>((e) => Post.fromMap(e)).toList();
+          posts.sort((post1,post2){
+            return post2.publishedAt!.compareTo(post1.publishedAt!);
+          });
+          final User user = User.fromMap(t['user']);
+          AppData.isAdmin = user.isAdmin!;
+          emit(ProfileSuccess(posts, user));
+        // } catch (error) {
+        //   emit(ProfileFailure('The user was Deleted'));
+        // }
+      }
+    // } catch (error) {
+    //   print(error.toString());
+    //   emit(ProfileFailure('Connection Error'));
+    // }
   }
 
   Future<void> _onProfileUpdated(

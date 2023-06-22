@@ -23,9 +23,16 @@ class CommentsBloc extends Bloc<CommentsEvent, CommentsState> {
     if (t == null) {
       emit(CommentsFailure('no comments'));
     } else {
-      final List<Comment> comments =
-          (t['data']).map<Comment>((e) => Comment.fromMap(e)).toList();
-      emit(CommentsSuccess(comments));
+      try{
+        final List<Comment> comments =
+        (t['data']).map<Comment>((e) => Comment.fromMap(e)).toList();
+        comments.sort((comment1,comment2){
+          return comment2.publishedAt!.compareTo(comment1.publishedAt!);
+        });
+        emit(CommentsSuccess(comments));
+      }catch(error){
+        emit(CommentsFailure('Connection Error'));
+      }
     }
   }
 

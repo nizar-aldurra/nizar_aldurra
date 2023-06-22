@@ -50,7 +50,7 @@ class Login extends StatelessWidget {
           return LoginForm(state.error,_loginBloc);
         }else{
           return const Scaffold(
-              body: Center(child: Text('Server Error')));
+              body: Center(child: Text('Connection Error')));
         }
       },
     );
