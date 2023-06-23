@@ -15,6 +15,5 @@ class AddPostLoaded extends AddPostState {
 
 class AddPostFailure extends AddPostState {
   String error;
-
   AddPostFailure(this.error);
 }

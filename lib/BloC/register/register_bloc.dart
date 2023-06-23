@@ -57,9 +57,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
       if (registerResponse.runtimeType == String) {
         emit(RegisterFailure(registerResponse));
+        return;
       } else {
         if (registerResponse.runtimeType != User) {
           emit(RegisterFailure('error'));
+          return;
         }
         User user = registerResponse as User;
         user.token = AppData.token;

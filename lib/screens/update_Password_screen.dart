@@ -7,14 +7,16 @@ import '../widgets/nice_text_field.dart';
 
 class UpdatePasswordScreen extends StatefulWidget {
   UpdatePasswordScreen({super.key});
-
+String password='';
+String confPassword='';
+String currentPassword='';
   @override
   State<UpdatePasswordScreen> createState() => _UpdatePasswordScreenState();
 }
 
 class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
-  UpdatePasswordBloc updatePasswordBloc = UpdatePasswordBloc();
   final _formKey = GlobalKey<FormState>();
+  UpdatePasswordBloc updatePasswordBloc = UpdatePasswordBloc();
   String? errorMessage;
 
   onchange() {
@@ -25,32 +27,26 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UpdatePasswordBloc, UpdatePasswordState>(
+    updatePasswordBloc.add(CurrentPasswordChanged(widget.currentPassword));
+    updatePasswordBloc.add(NewPasswordChanged(widget.password));
+    return BlocListener<UpdatePasswordBloc, UpdatePasswordState>(
       bloc: updatePasswordBloc,
-      builder: (context, state) {
+      listener: (context, state) {
         if (state is UpdatePasswordInitial) {
-          return UpdateForm(state, context);
         } else if (state is UpdatePasswordLoading) {
-          return const Scaffold(
-              body: Center(child: CircularProgressIndicator()));
         } else if (state is UpdatePasswordSuccess) {
           Navigator.of(context).pop();
-          return const Scaffold(
-              body: Center(child: CircularProgressIndicator()));
         } else if (state is UpdatePasswordFailure) {
-          return UpdateForm(state, context);
-        } else {
-          return const Scaffold(
-              body: Center(child: CircularProgressIndicator()));
+          setState(() {
+            errorMessage=state.error;
+          });
         }
       },
+      child: UpdateForm(context),
     );
   }
 
-  Widget UpdateForm(UpdatePasswordState state, BuildContext context) {
-    TextEditingController currentController = TextEditingController();
-    TextEditingController passwordController = TextEditingController();
-    TextEditingController confirmController = TextEditingController();
+  Widget UpdateForm(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -61,96 +57,97 @@ class _UpdatePasswordScreenState extends State<UpdatePasswordScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(30),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              errorMessage == null
-                  ? const SizedBox()
-                  : Text(
-                      errorMessage!,
-                      style: const TextStyle(color: Colors.red, fontSize: 18),
-                    ),
-              NiceTextField(
-                autofocus: true,
-                hintText: 'Enter the current password',
-                labelText: 'Current Password',
-                icon: Icons.lock_outline,
-                maxLines: 1,
-                keyboardType: TextInputType.emailAddress,
-                obscureText: true,
-                controller: currentController,
-                onChange: (value) {
-                  onchange();
-                  updatePasswordBloc.add(CurrentPasswordChanged(value));
-                },
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              NiceTextField(
-                hintText: 'Enter the new password',
-                labelText: 'New Password',
-                icon: Icons.lock_outline,
-                maxLines: 1,
-                keyboardType: TextInputType.emailAddress,
-                obscureText: true,
-                controller: passwordController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter password';
-                  } else if (RegExp(
-                          r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
-                      .hasMatch(value)) {
-                    return 'Enter valid password';
-                  } else {
-                    return null;
-                  }
-                },
-                onChange: (value) {
-                  onchange();
-                  updatePasswordBloc.add(NewPasswordChanged(value));
-                },
-              ),
-              NiceTextField(
-                hintText: 'Enter Re-Enter the new password',
-                labelText: 'Confirm Password',
-                icon: Icons.lock_outline,
-                maxLines: 1,
-                keyboardType: TextInputType.emailAddress,
-                obscureText: true,
-                controller: confirmController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please Re-Enter The Password';
-                  } else if (passwordController.value.text !=
-                      confirmController.value.text) {
-                    return 'Password must be same as above';
-                  } else {
-                    return null;
-                  }
-                },
-                onChange: (value) {
-                  onchange();
-                  updatePasswordBloc.add(ConfirmPasswordChanged(value));
-                },
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              NiceButton(
-                text: 'Update',
-                onPress: () {
-                  if (_formKey.currentState!.validate()) {
-                    updatePasswordBloc.add(UpdateButtonPressed());
-                    if (state is UpdatePasswordSuccess) {
-                      Navigator.of(context).pop();
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                errorMessage == null
+                    ? const SizedBox()
+                    : Text(
+                        errorMessage!,
+                        style: const TextStyle(color: Colors.red, fontSize: 18),
+                      ),
+                NiceTextField(
+                  autofocus: true,
+                  hintText: 'Enter the current password',
+                  labelText: 'Current Password',
+                  icon: Icons.lock_outline,
+                  maxLines: 1,
+                  keyboardType: TextInputType.emailAddress,
+                  obscureText: true,
+                  onChange: (value) {
+                    widget.currentPassword=value;
+                    updatePasswordBloc.add(CurrentPasswordChanged(value));
+                    onchange();
+                  },
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                NiceTextField(
+                  hintText: 'Enter the new password',
+                  labelText: 'New Password',
+                  icon: Icons.lock_outline,
+                  maxLines: 1,
+                  keyboardType: TextInputType.emailAddress,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter password';
+                    } else if (RegExp(
+                            r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+                        .hasMatch(value)) {
+                      return 'Enter valid password';
+                    } else {
+                      return null;
                     }
-                  }
-                },
-              ),
-            ],
+                  },
+                  onChange: (value) {
+                    widget.password=value;
+                    updatePasswordBloc.add(NewPasswordChanged(value));
+                    onchange();
+                  },
+                ),
+                NiceTextField(
+                  hintText: 'Enter Re-Enter the new password',
+                  labelText: 'Confirm Password',
+                  icon: Icons.lock_outline,
+                  maxLines: 1,
+                  keyboardType: TextInputType.emailAddress,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please Re-Enter The Password';
+                    } else if (widget.password !=
+                        widget.confPassword) {
+                      return 'Password must be same as above';
+                    } else {
+                      return null;
+                    }
+                  },
+                  onChange: (value) {
+                    widget.confPassword=value;
+                    onchange();
+                  },
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                NiceButton(
+                  text: 'Update',
+                  onPress: () {
+                    if (_formKey.currentState!.validate()) {
+                      print('${widget.password} ${widget.currentPassword} ${widget.confPassword}');
+                      // updatePasswordBloc.add(CurrentPasswordChanged(widget.currentPassword));
+                      // updatePasswordBloc.add(NewPasswordChanged(widget.password));
+                      updatePasswordBloc.add(UpdateButtonPressed());
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

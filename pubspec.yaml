@@ -15,6 +15,7 @@ dependencies:
   http:
   shared_preferences:
   intl:
+  expandable:
 
 dev_dependencies:
   flutter_test:

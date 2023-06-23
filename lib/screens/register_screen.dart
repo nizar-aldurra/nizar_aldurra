@@ -12,27 +12,21 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RegisterBloc, RegisterState>(
+    String? errorMessage;
+    return BlocListener<RegisterBloc, RegisterState>(
       bloc: _registerBloc,
-      builder: (context, state) {
+      listener: (context, state) {
         if (state is RegisterInitial) {
-          return RegisterForm(null,_registerBloc);
         } else if (state is RegisterLoading) {
-          return const Scaffold(
-              body: Center(child: CircularProgressIndicator()));
         } else if (state is RegisterSuccess) {
           context.read<AuthenticationBloc>().add(
-                AuthenticationSignedUp(state.user),
-              );
-          return HomeScreen();
+                AuthenticationSignedUp(state.user));
+              Navigator.of(context).pop();
         } else if(state is RegisterFailure){
-          return RegisterForm(state.error,_registerBloc);
-        }
-        else {
-          return const Scaffold(
-              body: Center(child: Text('Connection Error')));
+          errorMessage=state.error;
         }
       },
+      child: RegisterForm(errorMessage,_registerBloc),
     );
   }
 }

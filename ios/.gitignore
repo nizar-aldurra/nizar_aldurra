@@ -12,7 +12,7 @@
 Icon?
 **/Pods/
 **/.symlinks/
-profile
+user
 xcuserdata
 **/.generated/
 Flutter/App.framework

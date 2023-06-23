@@ -10,17 +10,17 @@ import '../models/user.dart';
 class UserRepository extends BaseRepository {
   UserRepository() : super(controller: 'user');
 
-  getUserPosts(String userId) async {
+  getActivities() async {
     var response = await http.get(
-        Uri.parse('${AppData.baseURL}/$controller/posts/$userId'),
+        Uri.parse('${AppData.baseURL}/$controller/activities'),
         headers: header());
     var result = jsonDecode(response.body);
     return result;
   }
 
-  UpdateInfoScreen(String userName, String email) async {
+  UpdateInfo(String userName, String email) async {
     var response =
-        await http.post(Uri.parse('${AppData.baseURL}/$controller/UpdateInfoScreen'),
+        await http.post(Uri.parse('${AppData.baseURL}/$controller/update_info'),
             headers: header(),
             body: jsonEncode({
               'name': userName,
@@ -28,14 +28,20 @@ class UserRepository extends BaseRepository {
             }));
     print(jsonDecode(response.body));
     if (response.statusCode == 200) {
-      return true;
+      try{
+        User user = User.fromMap(jsonDecode(response.body)['data']);
+        return user;
+      }catch(error){
+        print(error.toString());
+        return "Error";
+      }
     } else {
-      return false;
+      return jsonDecode(response.body)['message'];
     }
   }
   updatePassword(String currentPassword,String newPassword,) async {
     var response =
-        await http.post(Uri.parse('${AppData.baseURL}/$controller/updatePassword'),
+        await http.post(Uri.parse('${AppData.baseURL}/$controller/update_password'),
             headers: header(),
             body: jsonEncode({
               'current_password' : currentPassword,
@@ -43,9 +49,14 @@ class UserRepository extends BaseRepository {
             }));
     print(jsonDecode(response.body));
     if (response.statusCode == 200) {
-      return true;
+      try{
+        User user = User.fromMap(jsonDecode(response.body)['data']);
+        return user;
+      }catch(error){
+        return jsonDecode(response.body)['message'];
+      }
     } else {
-      return false;
+      return jsonDecode(response.body)['message'];
     }
   }
 }

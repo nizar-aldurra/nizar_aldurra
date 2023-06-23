@@ -19,10 +19,7 @@ class UpdateInfoScreen extends StatefulWidget {
 class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
   final _formKey = GlobalKey<FormState>();
   String? errorMessage;
-  UpdateInfoBloc _updateProfileBloc = UpdateInfoBloc();
-
-  String? password;
-
+  final UpdateInfoBloc _updateUserBloc = UpdateInfoBloc();
   onchange() {
     setState(() {
       errorMessage = null;
@@ -31,39 +28,27 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _updateProfileBloc.add(UserNameChanged(widget.name));
-    _updateProfileBloc.add(EmailChanged(widget.email));
-    return BlocBuilder<UpdateInfoBloc, UpdateInfoState>(
-      bloc: _updateProfileBloc,
-      builder: (context, state) {
+    _updateUserBloc.add(UserNameChanged(widget.name));
+    _updateUserBloc.add(EmailChanged(widget.email));
+    bool isUpdated=false;
+    return BlocListener<UpdateInfoBloc, UpdateInfoState>(
+      bloc: _updateUserBloc,
+      listener: (context, state){
         if (state is UpdateInfoInitial) {
-          return UpdateForm(widget.name, widget.email, state, context);
         } else if (state is UpdateInfoLoading) {
-          return const Scaffold(
-              body: Center(child: CircularProgressIndicator()));
         } else if (state is UpdateInfoSuccess) {
-          Navigator.of(context).pop();
-          return const Scaffold(
-              body: Center(child: CircularProgressIndicator()));
+          Navigator.pop(context,isUpdated);
         } else if (state is UpdateInfoFailure) {
-          return UpdateForm(widget.name, widget.email, state, context);
+          errorMessage=state.error;
+          isUpdated=false;
         } else {
-          return const Scaffold(
-              body: Center(child: CircularProgressIndicator()));
         }
       },
+      child: UpdateForm(context),
     );
   }
 
-  Widget UpdateForm(
-      String name, String email, UpdateInfoState state, BuildContext context) {
-    TextEditingController nameController = TextEditingController()
-      ..text = widget.name;
-    TextEditingController emailController = TextEditingController()
-      ..text = widget.email;
-    if (state is UpdateInfoFailure) {
-      errorMessage = state.error.toString();
-    }
+  Widget UpdateForm(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -74,76 +59,77 @@ class _UpdateInfoScreenState extends State<UpdateInfoScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(30),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              errorMessage == null
-                  ? const SizedBox()
-                  : Text(
-                      errorMessage!,
-                      style: const TextStyle(color: Colors.red, fontSize: 18),
-                    ),
-              NiceTextField(
-                hintText: 'Enter the name',
-                labelText: 'User Name',
-                icon: Icons.person,
-                maxLines: 1,
-                autofocus: true,
-                keyboardType: TextInputType.name,
-                controller: nameController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'please insert your name';
-                  } else {
-                    return null;
-                  }
-                },
-                onChange: (value) {
-                  onchange();
-                  print(value);
-                  _updateProfileBloc.add(UserNameChanged(value));
-                },
-              ),
-              NiceTextField(
-                hintText: 'Enter the email address',
-                labelText: 'Email',
-                icon: Icons.email_outlined,
-                maxLines: 1,
-                keyboardType: TextInputType.emailAddress,
-                controller: emailController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "please insert your email.";
-                  } else if (!RegExp(
-                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                      .hasMatch(value)) {
-                    return "please insert a valid email format.";
-                  } else {
-                    return null;
-                  }
-                },
-                onChange: (value) {
-                  onchange();
-                  _updateProfileBloc.add(EmailChanged(value));
-                },
-              ),
-              const SizedBox(
-                height: 15,
-              ),
-              NiceButton(
-                text: 'Update',
-                onPress: () {
-                  if (_formKey.currentState!.validate()) {
-                    _updateProfileBloc.add(UpdateButtonPressed());
-                    if (state is UpdateInfoSuccess) {
-                      Navigator.of(context).pop();
+        child: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                errorMessage == null
+                    ? const SizedBox()
+                    : Text(
+                        errorMessage!,
+                        style: const TextStyle(color: Colors.red, fontSize: 18),
+                      ),
+                NiceTextField(
+                  initialValue: widget.name,
+                  hintText: 'Enter the name',
+                  labelText: 'User Name',
+                  icon: Icons.person,
+                  maxLines: 1,
+                  autofocus: true,
+                  keyboardType: TextInputType.name,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'please insert your name';
+                    } else {
+                      return null;
                     }
-                  }
-                },
-              ),
-            ],
+                  },
+                  onChange: (value) {
+                    widget.name=value;
+                    onchange();
+                    _updateUserBloc.add(UserNameChanged(value));
+                    print(value);
+                  },
+                ),
+                NiceTextField(
+                  initialValue: widget.email,
+                  hintText: 'Enter the email address',
+                  labelText: 'Email',
+                  icon: Icons.email_outlined,
+                  maxLines: 1,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "please insert your email.";
+                    } else if (!RegExp(
+                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(value)) {
+                      return "please insert a valid email format.";
+                    } else {
+                      return null;
+                    }
+                  },
+                  onChange: (value) {
+                    widget.email=value;
+                    onchange();
+                    _updateUserBloc.add(EmailChanged(value));
+                  },
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                NiceButton(
+                  text: 'Update',
+                  onPress: () {
+                    if (_formKey.currentState!.validate()) {
+                      _updateUserBloc.add(UpdateButtonPressed());
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

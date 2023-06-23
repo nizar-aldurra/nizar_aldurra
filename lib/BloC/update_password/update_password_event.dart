@@ -14,11 +14,5 @@ class NewPasswordChanged extends UpdatePasswordEvent {
   NewPasswordChanged(this.password);
 }
 
-class ConfirmPasswordChanged extends UpdatePasswordEvent {
-  final String confirmPassword;
-
-  ConfirmPasswordChanged(this.confirmPassword);
-}
-
 
 class UpdateButtonPressed extends UpdatePasswordEvent {}

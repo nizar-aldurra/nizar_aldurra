@@ -57,7 +57,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     ListTile(
                       leading: const Icon(Icons.person),
-                      title: const Text('Profile'),
+                      title: const Text('User'),
                       onTap: () {
                         Navigator.pop(context);
                         Navigator.push(

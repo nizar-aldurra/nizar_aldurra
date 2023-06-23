@@ -35,15 +35,18 @@ class UpdateInfoBloc extends Bloc<UpdateInfoEvent, UpdateInfoState> {
       UpdateButtonPressed event, Emitter<UpdateInfoState> emit) async {
     try {
       dynamic updateResponse =
-          await userRepository.UpdateInfoScreen(_userName, _email);
+          await userRepository.UpdateInfo(_userName, _email);
       emit(UpdateInfoLoading());
 
       if (updateResponse.runtimeType == String) {
         emit(UpdateInfoFailure(updateResponse));
+        return;
       } else {
         if (updateResponse.runtimeType != User) {
           emit(UpdateInfoFailure('error'));
+          return;
         }
+        emit(UpdateInfoSuccess());
       }
     } catch (error) {
       print(error.toString());
