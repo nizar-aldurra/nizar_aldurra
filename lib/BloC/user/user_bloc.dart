@@ -26,7 +26,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       UserLoad event, Emitter<UserState> emit) async {
     emit(UserLoading());
     // try {
-      var t = await userRepository.getActivities();
+      var t = await userRepository.getUserInfo(event.userId);
       print('$t');
       if (t == null) {
         emit(UserFailure('no Posts'));
