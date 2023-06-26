@@ -24,7 +24,28 @@ class UserRepository extends BaseRepository {
     var result = jsonDecode(response.body);
     return result;
   }
+  getProfilePosts() async{
+    var response = await http.get(
+        Uri.parse('${AppData.baseURL}/$controller/posts'),
+        headers: header());
+    var result = jsonDecode(response.body);
+    return result;
+  }
 
+  getProileComments() async{
+    var response = await http.get(
+        Uri.parse('${AppData.baseURL}/$controller/comments'),
+        headers: header());
+    var result = jsonDecode(response.body);
+    return result;
+  }
+  getProfileLikedPosts() async{
+    var response = await http.get(
+        Uri.parse('${AppData.baseURL}/$controller/liked_posts'),
+        headers: header());
+    var result = jsonDecode(response.body);
+    return result;
+  }
   UpdateInfo(String userName, String email) async {
     var response =
         await http.post(Uri.parse('${AppData.baseURL}/$controller/update_info'),
@@ -66,4 +87,6 @@ class UserRepository extends BaseRepository {
       return jsonDecode(response.body)['message'];
     }
   }
+
+
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nizar_aldurra/screens/profile_comments_screen.dart';
+import 'package:nizar_aldurra/screens/profile_liked_posts_screen.dart';
+import 'package:nizar_aldurra/screens/profile_posts_screen.dart';
 
 import '../BloC/profile/profile_bloc.dart';
 import '../models/user.dart';
@@ -66,9 +69,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        ElevatedButton(onPressed: (){}, child: const Text('Posts')),
-                        ElevatedButton(onPressed: (){}, child: const Text('comments')),
-                        ElevatedButton(onPressed: (){}, child: const Text('Liked Posts')),
+                        ElevatedButton(onPressed: (){
+                          Navigator.of(context).pushNamed(ProfilePostsScreen.routeName);
+                        }, child: const Text('Posts')),
+                        ElevatedButton(onPressed: (){
+                          Navigator.of(context).pushNamed(ProfileCommentsScreen.routeName);
+                        }, child: const Text('comments')),
+                        ElevatedButton(onPressed: (){
+                          Navigator.of(context).pushNamed(ProfileLikedPostsScreen.routeName);
+                          }, child: const Text('Liked Posts')),
                       ],
                     ),
                   ),
