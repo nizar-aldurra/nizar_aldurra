@@ -3,8 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nizar_aldurra/screens/profile_comments_screen.dart';
 import 'package:nizar_aldurra/screens/profile_liked_posts_screen.dart';
 import 'package:nizar_aldurra/screens/profile_posts_screen.dart';
+import 'package:nizar_aldurra/screens/update_Info_screen.dart';
+import 'package:nizar_aldurra/screens/update_Password_screen.dart';
 
 import '../BloC/profile/profile_bloc.dart';
+import '../app/app_data.dart';
 import '../models/user.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -60,6 +63,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ],
                           ),
                         ),
+                      ),
+                        PopupMenuButton(
+                        itemBuilder: (BuildContext context) {
+                          return [
+                            const PopupMenuItem<String>(
+                                value: 'editInfo', child: Row(
+                              children: [
+                                Icon(Icons.person),
+                                Text('Update the information'),
+                              ],
+                            )),
+                            const PopupMenuItem<String>(
+                                value: 'editPassword', child: Row(
+                              children: [
+                                Icon(Icons.lock_outline),
+                                Text('update the password'),
+                              ],
+                            )),
+                          ];
+                        },
+                        onSelected: (String value) {
+                          if (value == 'editInfo') {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => UpdateInfoScreen(
+                                      state.user.name, state.user.email)),
+                            );
+                          } else if(value == 'editPassword'){
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => UpdatePasswordScreen()),
+                            );
+                          }
+                          print(value);
+                        },
+                        icon: const Icon(Icons.edit),
                       ),
                     ],
                   ),

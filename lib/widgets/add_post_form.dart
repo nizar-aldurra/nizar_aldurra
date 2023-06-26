@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nizar_aldurra/BloC/add_post/add_post_bloc.dart';
 
 class AddPostForm extends StatelessWidget {
@@ -15,11 +16,11 @@ class AddPostForm extends StatelessWidget {
     return BlocListener<AddPostBloc, AddPostState>(
       bloc: _addPostBloc,
       listener: (context, state) {
-        if (state is AddPostLoaded){
+        if (state is AddPostLoaded) {
           Navigator.of(context).pop();
         }
-        if(state is AddPostFailure){
-          errorMessage=state.error;
+        if (state is AddPostFailure) {
+          errorMessage = state.error;
         }
       },
       child: Form(
@@ -31,9 +32,9 @@ class AddPostForm extends StatelessWidget {
               errorMessage == null
                   ? const SizedBox()
                   : Text(
-                errorMessage!,
-                style: const TextStyle(color: Colors.red, fontSize: 18),
-              ),
+                      errorMessage!,
+                      style: const TextStyle(color: Colors.red, fontSize: 18),
+                    ),
               TextFormField(
                 textInputAction: TextInputAction.next,
                 decoration: const InputDecoration(
@@ -71,6 +72,15 @@ class AddPostForm extends StatelessWidget {
                 height: 20,
               ),
               ElevatedButton(
+                  onPressed: () async {
+                    selectImages().then(
+                        (value) => _addPostBloc.add(ImagesPostChanged(value)));
+                  },
+                  child: const Text('select images')),
+              const SizedBox(
+                height: 20,
+              ),
+              ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       _addPostBloc.add(AddPostButtonPressed());
@@ -82,5 +92,15 @@ class AddPostForm extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<List<XFile>> selectImages() async {
+    List<XFile> resultList = [];
+    try {
+      resultList = await ImagePicker().pickMultiImage();
+    } catch (e) {
+      print(e.toString());
+    }
+    return resultList;
   }
 }

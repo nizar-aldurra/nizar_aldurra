@@ -1,9 +1,12 @@
+import 'package:image_picker/image_picker.dart';
+
 class Post {
   String? id;
   String? userId;
   String? userName;
   String title;
   String body;
+  List<XFile>? images;
   int? likesNum;
   int? commentsNum;
   bool isLiked;
@@ -19,6 +22,7 @@ class Post {
     this.isLiked = false,
     this.commentsNum,
     this.likesNum,
+    this.images,
   });
 
   Map<String, dynamic> toMap() {

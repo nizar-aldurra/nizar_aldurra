@@ -15,4 +15,10 @@ class BodyPostChanged extends AddPostEvent {
   BodyPostChanged(this.body);
 }
 
+class ImagesPostChanged extends AddPostEvent {
+  final List<XFile> images;
+
+  ImagesPostChanged(this.images);
+}
+
 class AddPostButtonPressed extends AddPostEvent {}
