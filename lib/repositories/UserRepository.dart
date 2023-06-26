@@ -10,9 +10,16 @@ import '../models/user.dart';
 class UserRepository extends BaseRepository {
   UserRepository() : super(controller: 'user');
 
-  getUserInfo(String userId) async {
+  getUserPosts(String userId) async {
     var response = await http.get(
-        Uri.parse('${AppData.baseURL}/$controller/info/$userId'),
+        Uri.parse('${AppData.baseURL}/$controller/posts/$userId'),
+        headers: header());
+    var result = jsonDecode(response.body);
+    return result;
+  }
+  getProfileInfo() async {
+    var response = await http.get(
+        Uri.parse('${AppData.baseURL}/$controller/info'),
         headers: header());
     var result = jsonDecode(response.body);
     return result;

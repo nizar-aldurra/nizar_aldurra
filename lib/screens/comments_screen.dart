@@ -5,7 +5,6 @@ import 'package:nizar_aldurra/BloC/add_comment/add_comment_bloc.dart';
 import 'package:nizar_aldurra/BloC/comments/comments_bloc.dart';
 import 'package:nizar_aldurra/models/comment.dart';
 import 'package:nizar_aldurra/screens/user_screen.dart';
-import 'package:nizar_aldurra/widgets/nice_text_field.dart';
 
 class CommentsScreen extends StatelessWidget {
   static const routeName = 'comments_screen';

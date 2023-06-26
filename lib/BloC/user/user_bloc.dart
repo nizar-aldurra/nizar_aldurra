@@ -26,25 +26,25 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       UserLoad event, Emitter<UserState> emit) async {
     emit(UserLoading());
     // try {
-      var t = await userRepository.getUserInfo(event.userId);
+      var t = await userRepository.getUserPosts(event.userId);
       print('$t');
       if (t == null) {
         emit(UserFailure('no Posts'));
       } else {
         // try {
           final List<Post> posts =
-              (t['my_posts']).map<Post>((e) => Post.fromMap(e)).toList();
+              (t['data']).map<Post>((e) => Post.fromMap(e)).toList();
           posts.sort((post1,post2){
             return post2.publishedAt!.compareTo(post1.publishedAt!);
           });
           final User user = User.fromMap(t['user']);
-          List<Post> likedPosts = (t['liked_posts']).map<Post>((e) => Post.fromMap(e)).toList();
-          likedPosts.sort((post1,post2){
-            return post2.publishedAt!.compareTo(post1.publishedAt!);
-          });
-          List<Comment> comments = (t['comments']).map<Comment>((e) => Comment.fromMap(e)).toList();
+          // List<Post> likedPosts = (t['liked_posts']).map<Post>((e) => Post.fromMap(e)).toList();
+          // likedPosts.sort((post1,post2){
+          //   return post2.publishedAt!.compareTo(post1.publishedAt!);
+          // });
+          // List<Comment> comments = (t['comments']).map<Comment>((e) => Comment.fromMap(e)).toList();
           AppData.isAdmin = user.isAdmin!;
-          emit(UserSuccess(posts,likedPosts,comments, user));
+          emit(UserSuccess(posts, user));
         // } catch (error) {
         //   emit(UserFailure('The user was Deleted'));
         // }

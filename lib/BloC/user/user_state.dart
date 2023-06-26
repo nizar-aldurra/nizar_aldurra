@@ -8,12 +8,10 @@ class UserInitial extends UserState {}
 class UserLoading extends UserState {}
 
 class UserSuccess extends UserState {
-  List<Post> myPosts;
-  List<Post> likedPosts;
-  List<Comment> comments;
+  List<Post> posts;
   User user;
 
-  UserSuccess(this.myPosts,this.likedPosts,this.comments, this.user);
+  UserSuccess(this.posts, this.user);
 }
 
 class UserFailure extends UserState {

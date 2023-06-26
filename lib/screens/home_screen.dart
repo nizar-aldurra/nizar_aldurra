@@ -6,6 +6,7 @@ import 'package:nizar_aldurra/BloC/deletePost/delete_post_bloc.dart';
 import 'package:nizar_aldurra/BloC/like_post/like_post_bloc.dart';
 import 'package:nizar_aldurra/app/app_data.dart';
 import 'package:nizar_aldurra/screens/comments_screen.dart';
+import 'package:nizar_aldurra/screens/profile_screen.dart';
 import 'package:nizar_aldurra/screens/user_screen.dart';
 import '../BloC/posts/posts_bloc.dart';
 import '../models/post.dart';
@@ -57,15 +58,10 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     ListTile(
                       leading: const Icon(Icons.person),
-                      title: const Text('User'),
+                      title: const Text('Profile'),
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  UserScreen(userId: AppData.userId)),
-                        );
+                        Navigator.of(context).pushNamed(ProfileScreen.routeName);
                       },
                     ),
                   ],
@@ -117,7 +113,7 @@ class _PostsWidgetState extends State<PostsWidget> {
           List<Post> posts = state.posts;
           if (posts.isEmpty) {
             return const Center(
-              child: Text('No Comments'),
+              child: Text('No Posts'),
             );
           } else {
             return Padding(
