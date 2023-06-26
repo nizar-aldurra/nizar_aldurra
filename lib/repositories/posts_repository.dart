@@ -29,8 +29,10 @@ class PostsRepository extends BaseRepository {
     var response = await request.send();
     if(response.statusCode ==  200){
       print('post uploaded successfully');
+      return true;
     }else {
       print('Error uploading post , Status error : ${response.statusCode}');
+      return false;
     }
   }
   getPostComments(String postId) async {

@@ -43,7 +43,7 @@ class AddPostBloc extends Bloc<AddPostEvent, AddPostState> {
       emit(AddPostLoading());
       Post post = Post(title: _title, body: _body,images: _images);
       var response = await postsRepository.storePost(post);
-      if (response == null) {
+      if (response == false) {
         print('failed to add post');
       } else {
         emit(AddPostLoaded());

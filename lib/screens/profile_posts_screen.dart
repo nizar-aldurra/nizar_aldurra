@@ -9,8 +9,10 @@ import '../BloC/profile_posts/profile_posts_bloc.dart';
 import '../app/app_data.dart';
 import '../models/post.dart';
 import 'comments_screen.dart';
+
 class ProfilePostsScreen extends StatefulWidget {
   static String routeName = 'profile_posts_screen';
+
   const ProfilePostsScreen({super.key});
 
   @override
@@ -24,6 +26,7 @@ class _ProfilePostsScreenState extends State<ProfilePostsScreen> {
     context.read<ProfilePostsBloc>().add(ProfilePostsLoad());
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfilePostsBloc, ProfilePostsState>(
@@ -60,6 +63,7 @@ class _ProfilePostsScreenState extends State<ProfilePostsScreen> {
       },
     );
   }
+
   Widget postCard(BuildContext context, int index, List<Post> posts) {
     return Card(
       child: Padding(
@@ -76,13 +80,7 @@ class _ProfilePostsScreenState extends State<ProfilePostsScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      UserScreen(userId: posts[index].userId!)),
-                            );
-                          },
+                          onPressed: () {},
                           child: Text(
                             posts[index].userName!,
                             style: const TextStyle(
@@ -102,7 +100,7 @@ class _ProfilePostsScreenState extends State<ProfilePostsScreen> {
                                 posts[index].publishedAt?.timeZoneName == null
                                     ? 'null'
                                     : DateFormat('dd/MM/yyyy  HH:mm:a')
-                                    .format(posts[index].publishedAt!),
+                                        .format(posts[index].publishedAt!),
                                 style: const TextStyle(fontSize: 18),
                               ),
                               Padding(
@@ -117,30 +115,32 @@ class _ProfilePostsScreenState extends State<ProfilePostsScreen> {
                   ),
                   AppData.isAdmin
                       ? BlocProvider(
-                    create: (context) => DeletePostBloc(),
-                    child: BlocBuilder<DeletePostBloc, DeletePostState>(
-                      builder: (context, state) {
-                        return PopupMenuButton(
-                          itemBuilder: (BuildContext context) {
-                            return [
-                              const PopupMenuItem<String>(
-                                  value: 'delete', child: Text('Delete')),
-                            ];
-                          },
-                          onSelected: (String value) {
-                            if (value == 'delete') {
-                              context
-                                  .read<DeletePostBloc>()
-                                  .add(DeletePost(posts[index].id!));
-                              context.read<ProfilePostsBloc>().add(ProfilePostsLoad());
-                            }
-                            print(value);
-                          },
-                          icon: const Icon(Icons.more_vert),
-                        );
-                      },
-                    ),
-                  )
+                          create: (context) => DeletePostBloc(),
+                          child: BlocBuilder<DeletePostBloc, DeletePostState>(
+                            builder: (context, state) {
+                              return PopupMenuButton(
+                                itemBuilder: (BuildContext context) {
+                                  return [
+                                    const PopupMenuItem<String>(
+                                        value: 'delete', child: Text('Delete')),
+                                  ];
+                                },
+                                onSelected: (String value) {
+                                  if (value == 'delete') {
+                                    context
+                                        .read<DeletePostBloc>()
+                                        .add(DeletePost(posts[index].id!));
+                                    context
+                                        .read<ProfilePostsBloc>()
+                                        .add(ProfilePostsLoad());
+                                  }
+                                  print(value);
+                                },
+                                icon: const Icon(Icons.more_vert),
+                              );
+                            },
+                          ),
+                        )
                       : const SizedBox(),
                 ]),
             Padding(
@@ -158,14 +158,17 @@ class _ProfilePostsScreenState extends State<ProfilePostsScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextButton(
-                        onPressed: () async{
-                          dynamic commentsNum= await Navigator.of(context).pushNamed(
-                              CommentsScreen.routeName,
-                              arguments: {'post_id': posts[index].id,'commentsNum':posts[index].commentsNum});
+                        onPressed: () async {
+                          dynamic commentsNum = await Navigator.of(context)
+                              .pushNamed(CommentsScreen.routeName, arguments: {
+                            'post_id': posts[index].id,
+                            'commentsNum': posts[index].commentsNum
+                          });
                           setState(() {
-                            if(commentsNum != null && commentsNum.runtimeType == int){
+                            if (commentsNum != null &&
+                                commentsNum.runtimeType == int) {
                               print(commentsNum);
-                              posts[index].commentsNum=commentsNum;
+                              posts[index].commentsNum = commentsNum;
                             }
                           });
                         },
