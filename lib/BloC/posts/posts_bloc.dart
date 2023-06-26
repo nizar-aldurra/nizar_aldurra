@@ -20,26 +20,29 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
 
   Future<void> _onPostsLoad(PostsLoad event, Emitter<PostsState> emit) async {
     emit(PostsLoading());
-    try{
+    // try{
       var t = await postsRepository.getAll();
       print('$t');
       if (t == null) {
+        print('returned null');
         emit(PostsFailure('No Posts'));
       } else {
-        try {
+        // try {
           final List<Post> posts =
               (t['data']).map<Post>((e) => Post.fromMap(e)).toList();
           posts.sort((post1,post2){
             return post2.publishedAt!.compareTo(post1.publishedAt!);
           });
           emit(PostsSuccess(posts));
-        } catch (error) {
-          emit(PostsFailure('No Posts'));
-        }
+        // } catch (error) {
+        //   print(error.toString());
+        //   emit(PostsFailure('No Posts'));
+        // }
       }
-    }catch(error){
-      emit(PostsFailure("Connection Error"));
-    }
+    // }catch(error){
+    //   print(error.toString());
+    //   emit(PostsFailure("Connection Error"));
+    // }
   }
 
   Future<void> _onPostsUpdated(
