@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -61,7 +62,8 @@ class HomeScreen extends StatelessWidget {
                       title: const Text('Profile'),
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.of(context).pushNamed(ProfileScreen.routeName);
+                        Navigator.of(context)
+                            .pushNamed(ProfileScreen.routeName);
                       },
                     ),
                   ],
@@ -182,12 +184,31 @@ class _PostsWidgetState extends State<PostsWidget> {
                                 padding: const EdgeInsets.all(14.0),
                                 child: Column(
                                   children: [
-                                    Wrap(
-                                      spacing: 8,
-                                      runSpacing: 8,
-                                      children: [
-                                      ],
-                                    ),
+                                    posts[index].imageURLs!.isNotEmpty?GridView.builder(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        crossAxisSpacing: 4,
+                                        mainAxisSpacing: 4,
+                                      ),
+                                      itemCount: posts[index].images?.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index1) {
+                                        GestureDetector(
+                                          onTap: (){},
+                                          child: CachedNetworkImage(
+                                            imageUrl: posts[index].imageURLs![index1],
+                                            fit: BoxFit.cover,
+                                            placeholder: (context,url)=>Container(
+                                              color: Colors.grey[300],
+                                            ),
+                                            errorWidget: (context,url,error)=>const Icon(Icons.error),
+                                          ),
+                                        );
+                                          },
+                                    ):const SizedBox(),
                                     Text(posts[index].body),
                                   ],
                                 ),
@@ -273,14 +294,17 @@ class _PostsWidgetState extends State<PostsWidget> {
                       ),
                       const Expanded(child: SizedBox()),
                       TextButton(
-                        onPressed: () async{
-                          dynamic commentsNum= await Navigator.of(context).pushNamed(
-                              CommentsScreen.routeName,
-                              arguments: {'post_id': posts[index].id,'commentsNum':posts[index].commentsNum});
+                        onPressed: () async {
+                          dynamic commentsNum = await Navigator.of(context)
+                              .pushNamed(CommentsScreen.routeName, arguments: {
+                            'post_id': posts[index].id,
+                            'commentsNum': posts[index].commentsNum
+                          });
                           setState(() {
-                            if(commentsNum != null && commentsNum.runtimeType == int){
+                            if (commentsNum != null &&
+                                commentsNum.runtimeType == int) {
                               print(commentsNum);
-                              posts[index].commentsNum=commentsNum;
+                              posts[index].commentsNum = commentsNum;
                             }
                           });
                         },

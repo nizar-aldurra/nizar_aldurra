@@ -7,6 +7,7 @@ class Post {
   String title;
   String body;
   List<XFile>? images;
+  List<String>? imageURLs;
   int? likesNum;
   int? commentsNum;
   bool isLiked;
@@ -23,6 +24,7 @@ class Post {
     this.commentsNum,
     this.likesNum,
     this.images,
+    this.imageURLs,
   });
 
   Map<String, dynamic> toMap() {
@@ -47,6 +49,7 @@ class Post {
       isLiked: map['is_liked'] as bool,
       likesNum: map['likes'] as int,
       commentsNum: map['comments'] as int,
+      imageURLs: map['images'] as List<String>,
       publishedAt: DateTime.parse(map['created_at']).toLocal(),
     );
   }
