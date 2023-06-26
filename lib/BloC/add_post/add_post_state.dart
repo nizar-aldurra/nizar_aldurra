@@ -8,9 +8,6 @@ class AddPostInitial extends AddPostState {}
 class AddPostLoading extends AddPostState {}
 
 class AddPostLoaded extends AddPostState {
-  Post post;
-
-  AddPostLoaded(this.post);
 }
 
 class AddPostFailure extends AddPostState {

@@ -17,6 +17,7 @@ dependencies:
   intl:
   expandable:
   image_picker:
+  http_parser:
 
 dev_dependencies:
   flutter_test:

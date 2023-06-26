@@ -180,7 +180,17 @@ class _PostsWidgetState extends State<PostsWidget> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(14.0),
-                                child: Text(posts[index].body),
+                                child: Column(
+                                  children: [
+                                    Wrap(
+                                      spacing: 8,
+                                      runSpacing: 8,
+                                      children: [
+                                      ],
+                                    ),
+                                    Text(posts[index].body),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
