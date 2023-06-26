@@ -110,10 +110,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         ElevatedButton(onPressed: (){
                           Navigator.of(context).pushNamed(ProfilePostsScreen.routeName);
-                        }, child: const Text('Posts')),
+                        }, child: const Text('My Posts')),
                         ElevatedButton(onPressed: (){
                           Navigator.of(context).pushNamed(ProfileCommentsScreen.routeName);
-                        }, child: const Text('comments')),
+                        }, child: const Text('My Comments')),
                         ElevatedButton(onPressed: (){
                           Navigator.of(context).pushNamed(ProfileLikedPostsScreen.routeName);
                           }, child: const Text('Liked Posts')),
