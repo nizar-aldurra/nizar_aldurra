@@ -7,7 +7,7 @@ class Post {
   String title;
   String body;
   List<XFile>? images;
-  List<String>? imageURLs;
+  List<dynamic>? imageURLs;
   int? likesNum;
   int? commentsNum;
   bool isLiked;
@@ -49,7 +49,7 @@ class Post {
       isLiked: map['is_liked'] as bool,
       likesNum: map['likes'] as int,
       commentsNum: map['comments'] as int,
-      imageURLs: map['images'] as List<String>,
+      imageURLs: map['images'],
       publishedAt: DateTime.parse(map['created_at']).toLocal(),
     );
   }
