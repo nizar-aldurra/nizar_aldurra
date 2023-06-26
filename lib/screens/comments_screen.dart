@@ -196,7 +196,10 @@ class _CommentsWidgetState extends State<CommentsWidget> {
                       .format(comments[index].publishedAt!),
               style: const TextStyle(fontSize: 18),
             ),
-            Text(comments[index].body),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(comments[index].body),
+            ),
           ],
         ),
       ),
